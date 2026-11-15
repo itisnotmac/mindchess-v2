@@ -27,7 +27,7 @@ const MAX_TOKENS = parseInt(process.env.MAX_TOKENS || '512', 10);
 
 // Gemini config
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash'; // free tier, 1500 req/day
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash'; // free tier, better instruction-following
 
 // Anthropic config (future upgrade path)
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -71,6 +71,9 @@ const anthropicClient = ANTHROPIC_API_KEY
 
 const app = express();
 
+// Trust Railway's proxy so express-rate-limit can read X-Forwarded-For correctly
+app.set('trust proxy', 1);
+
 app.use(express.json({ limit: '32kb' }));
 
 app.use(cors({
@@ -110,14 +113,25 @@ async function callGemini(messages, system) {
 
   // Gemini uses {role: 'user'/'model', parts: [{text}]}
   // Map 'assistant' → 'model' for Gemini's format
-  const history = messages.slice(0, -1).map(m => ({
+  let geminiMessages = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content.slice(0, 4000) }],
   }));
 
-  const lastMessage = messages[messages.length - 1];
+  // Belt-and-suspenders: also inject the system prompt as the first user/model
+  // exchange so Gemini models that ignore systemInstruction still follow it.
+  if (system) {
+    geminiMessages = [
+      { role: 'user',  parts: [{ text: `[System instructions — follow these at all times]\n${system.slice(0, 2000)}` }] },
+      { role: 'model', parts: [{ text: 'Understood. I will follow these instructions for our entire conversation.' }] },
+      ...geminiMessages,
+    ];
+  }
+
+  const history = geminiMessages.slice(0, -1);
+  const lastMessage = geminiMessages[geminiMessages.length - 1];
   const chat = model.startChat({ history });
-  const result = await chat.sendMessage(lastMessage.content.slice(0, 4000));
+  const result = await chat.sendMessage(lastMessage.parts[0].text);
   return result.response.text();
 }
 
@@ -154,6 +168,14 @@ app.post('/api/chat', async (req, res) => {
     if (normalised.length === 0) {
       return res.status(400).json({ error: 'No valid messages after filtering.' });
     }
+
+    // Gemini requires the first message to have role 'user'.
+    // Drop any leading assistant messages so a bad client can't crash the server.
+    const firstUserIdx = normalised.findIndex(m => m.role === 'user');
+    if (firstUserIdx === -1) {
+      return res.status(400).json({ error: 'At least one user message is required.' });
+    }
+    normalised = normalised.slice(firstUserIdx);
 
     const content = PROVIDER === 'anthropic'
       ? await callAnthropic(normalised, system)
