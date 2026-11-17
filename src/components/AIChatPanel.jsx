@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { invokeAIChat } from '@/lib/aiClient';
 import { X, Send, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { isPremium } from '@/lib/premium';
+import { useNavigate } from 'react-router-dom';
 
-const SYSTEM_PROMPT = `You are Mind Chess, an elite AI chess coach with encyclopedic knowledge of ALL things chess. You ONLY discuss chess-related topics: openings, middlegame strategy, endgames, tactics, famous games, players, tournament preparation, chess history, rules, notation, and chess culture. If asked about ANYTHING non-chess, politely deflect with wit and a chess-themed response like "That's not really my terrain — but I could talk all day about the Sicilian Najdorf! Ask me something chess-related." Be enthusiastic, encouraging, and expert-level. Use proper chess notation (e.g., 1.e4 e5 2.Nf3 Nc6). Keep responses concise but thorough. You are part of the Mind Chess family, a companion to Reel Chess.`;
+const SYSTEM_PROMPT = `You are The Chess God — an elite AI chess coach inside the Mind Chess app. You have encyclopedic knowledge of everything chess: history, origins, rules, notation, openings, tactics, strategy, endgames, famous players, legendary games, tournaments, chess culture, and psychology. Chess history questions like "when was chess invented", "who invented chess", "how did chess spread to Europe" are absolutely chess topics — answer them fully and enthusiastically. Only deflect questions that are genuinely unrelated to chess (sports, cooking, politics, etc.) with a witty chess-themed redirect. Be enthusiastic, encouraging, and expert-level. Use proper chess notation when relevant (e.g., 1.e4 e5 2.Nf3 Nc6). Keep responses concise but thorough.`;
 
 export default function AIChatPanel({ open, onClose }) {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "Hey! I'm your Mind Chess coach ♟️ Ask me anything — openings, tactics, endgames, famous games, strategy... I live and breathe chess. What's on your mind?" }
   ]);
@@ -26,21 +29,65 @@ export default function AIChatPanel({ open, onClose }) {
     setLoading(true);
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     try {
-      const chatMessages = [...messages, { role: 'user', content: userMsg }].map(m => ({
+      // Gemini requires first message to be 'user' — strip any leading assistant messages
+      const allMessages = [...messages, { role: 'user', content: userMsg }];
+      const firstUserIdx = allMessages.findIndex(m => m.role === 'user');
+      const chatMessages = allMessages.slice(firstUserIdx).map(m => ({
         role: m.role,
         content: m.content,
       }));
       const response = await invokeAIChat(chatMessages, SYSTEM_PROMPT);
       setMessages(prev => [...prev, { role: 'assistant', content: response || 'Let me think about that...' }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Hmm, I had trouble processing that. Let's try again — ask me something about chess!" }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${e?.message ?? e}` }]);
     }
     setLoading(false);
   };
 
   if (!open) return null;
 
-  return (
+    // Premium gate — show upgrade prompt inside the panel
+  if (!isPremium()) {
+    return (
+      <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+        <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col h-full">
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                <Bot className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">The Chess God</p>
+                <p className="text-xs text-muted-foreground">definitely knows more about chess than you</p>
+              </div>
+            </div>
+            <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center gap-5 p-8 text-center">
+            <div className="text-5xl">♟️</div>
+            <h2 className="text-xl font-black text-white">Premium Feature</h2>
+            <p className="text-gray-400 text-sm max-w-xs">
+              The Chess God awaits. Upgrade to Premium to unlock unlimited AI coaching.
+            </p>
+            <button
+              onClick={() => { onClose(); navigate('/upgrade'); }}
+              className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-full transition-colors"
+            >
+              Upgrade — $2.99/mo
+            </button>
+            <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-300">
+              Maybe later
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col h-full">
