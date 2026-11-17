@@ -6,15 +6,16 @@ import { playSound } from '@/lib/sound';
 import { storage } from '@/lib/storage';
 import { getLevelForXP, canAccess } from '@/lib/progression';
 import LevelGate from '@/components/LevelGate';
-import { Gamepad2, RotateCcw, ArrowLeft, Bot, Loader2 } from 'lucide-react';
+import { isPremium } from '@/lib/premium';
+import { Gamepad2, RotateCcw, ArrowLeft, Bot, Loader2, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DIFFICULTIES = [
-  { value: 'beginner', label: 'Yellow Belt',      rating: 800,  desc: 'Random moves',  unlockTag: null },
-  { value: 'easy',     label: 'Tough Guy',         rating: 1000, desc: '1-ply search',  unlockTag: null },
-  { value: 'intermediate', label: 'Getting Serious', rating: 1200, desc: '2-ply search', unlockTag: 'ai_intermediate' },
-  { value: 'advanced', label: 'Brick Top',         rating: 1500, desc: '3-ply search',  unlockTag: 'ai_advanced' },
-  { value: 'master',   label: 'Final Boss',        rating: 1800, desc: '4-ply search',  unlockTag: 'ai_master' },
+  { value: 'beginner',      label: 'Yellow Belt',      rating: 800,  desc: 'Random moves',  premium: false },
+  { value: 'easy',          label: 'Tough Guy',         rating: 1000, desc: '1-ply search',  premium: false },
+  { value: 'intermediate',  label: 'Getting Serious',   rating: 1200, desc: '2-ply search',  premium: true  },
+  { value: 'advanced',      label: 'Brick Top',         rating: 1500, desc: '3-ply search',  premium: true  },
+  { value: 'master',        label: 'Final Boss',        rating: 1800, desc: '4-ply search',  premium: true  },
 ];
 
 function calcElo(playerElo, aiElo, result) {
@@ -25,7 +26,7 @@ function calcElo(playerElo, aiElo, result) {
 
 export default function PlayVsAI() {
   const [phase, setPhase] = useState('setup');
-  const [difficulty, setDifficulty] = useState('intermediate');
+  const [difficulty, setDifficulty] = useState(isPremium() ? 'intermediate' : 'easy');
   const [playerColor, setPlayerColor] = useState('white');
   const [fen, setFen] = useState(createGame().fen());
   const [lastMove, setLastMove] = useState(null);
@@ -62,6 +63,12 @@ export default function PlayVsAI() {
   }, []);
 
   const startGame = (diff, color) => {
+    // Guard: block premium difficulties if not unlocked
+    const chosen = DIFFICULTIES.find(d => d.value === diff);
+    if (chosen?.premium && !isPremium()) {
+      navigate('/upgrade');
+      return;
+    }
     setDifficulty(diff);
     setPlayerColor(color);
     const g = createGame();
@@ -151,10 +158,19 @@ export default function PlayVsAI() {
         <h2 className="text-sm font-bold text-muted-foreground mb-3 uppercase tracking-wide">Difficulty</h2>
         <div className="space-y-2 mb-8">
           {DIFFICULTIES.map(d => {
-            const xp = profile?.xp || 0;
-            const locked = d.unlockTag && !canAccess(xp, d.unlockTag);
+            const locked = d.premium && !isPremium();
             return locked ? (
-              <LevelGate key={d.value} xp={xp} tag={d.unlockTag} />
+              <button key={d.value} onClick={() => navigate('/upgrade')}
+                className="w-full flex items-center justify-between p-4 rounded-lg border border-border bg-secondary/40 text-muted-foreground opacity-70 cursor-pointer hover:border-primary/30 transition-all">
+                <div className="flex items-center gap-3">
+                  <Lock className="w-4 h-4 shrink-0 text-primary/60" />
+                  <div className="text-left">
+                    <div className="font-bold">{d.label}</div>
+                    <div className="text-xs">Unlock the Vault to play</div>
+                  </div>
+                </div>
+                <span className="text-primary/50 font-mono text-sm">{d.rating}</span>
+              </button>
             ) : (
               <button key={d.value} onClick={() => setDifficulty(d.value)}
                 className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all
