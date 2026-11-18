@@ -1,0 +1,28 @@
+{
+  "appId": "io.mindchess.app",
+  "appName": "mindchess",
+  "webDir": "dist",
+  "plugins": {
+    "EdgeToEdgePlugin": {
+      "backgroundColor": "#00000000"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#00000000",
+      "overlaysWebView": true
+    },
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "DARK",
+      "resizeOnFullScreen": true
+    }
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}
