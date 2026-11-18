@@ -1,6 +1,5 @@
 /**
  * aiClient.js — thin wrapper for the AI proxy endpoint.
- * Replaces all base44.integrations.Core.InvokeLLM calls.
  */
 
 const AI_BASE = import.meta.env.VITE_AI_API_URL ?? '';
