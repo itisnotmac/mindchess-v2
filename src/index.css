@@ -52,12 +52,23 @@
   body {
     @apply bg-background text-foreground font-body;
     background-color: #0D0D14;
-    background-image: url('/castle-bg.jpg');
+    background-image: url('/room-throne.jpg');
     background-size: cover;
     background-position: center top;
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
+
+  /* ── Per-room backgrounds ───────────────────────────────────────────── */
+  body.room-throne       { background-image: url('/room-throne.jpg'); }
+  body.room-game-hall    { background-image: url('/room-game-hall.jpg'); }
+  body.room-library      { background-image: url('/room-library.jpg'); }
+  body.room-war-room     { background-image: url('/room-war-room.jpg'); }
+  body.room-hall-of-records { background-image: url('/room-hall-of-records.jpg'); }
+  body.room-castle-gate  { background-image: url('/room-castle-gate.jpg'); }
+  body.room-dungeon      { background-image: url('/room-dungeon.jpg'); }
+  body.room-observatory  { background-image: url('/room-observatory.jpg'); }
+  body.room-forge        { background-image: url('/room-forge.jpg'); }
 
   /* Dark overlay so text stays readable over the castle image */
   body::before {

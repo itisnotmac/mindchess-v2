@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useEffect } from 'react';
 import { storage } from '@/lib/storage';
 import { getLevelForXP } from '@/lib/progression';
@@ -5,6 +6,7 @@ import { Crown, Star, Brain, BookOpen } from 'lucide-react';
 import ProfileStats from '@/components/ProfileStats';
 
 export default function Profile() {
+  useRoomBackground('room-hall-of-records');
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {

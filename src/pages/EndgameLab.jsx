@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useMemo } from 'react';
 import ChessBoard from '@/components/chess/ChessBoard';
 import { createGame, makeMove, isCheckmate, isCheck, isDraw, isStalemate } from '@/lib/chessEngine';
@@ -7,6 +8,7 @@ import { Target, Lightbulb } from 'lucide-react';
 import ReadAloudButton from '@/components/ReadAloudButton';
 
 export default function EndgameLab() {
+  useRoomBackground('room-dungeon');
   const [endgame, setEndgame] = useState(null);
   const [fen, setFen] = useState('');
 

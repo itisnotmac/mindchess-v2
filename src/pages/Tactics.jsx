@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { storage } from '@/lib/storage';
 import { XP } from '@/lib/progression';
@@ -9,6 +10,7 @@ import { Brain, Flame, CheckCircle2, XCircle, Lightbulb, SkipForward, Loader2 } 
 import ReadAloudButton from '@/components/ReadAloudButton';
 
 export default function Tactics() {
+  useRoomBackground('room-war-room');
   const [puzzle, setPuzzle] = useState(null);
   const [fen, setFen] = useState('');
   const [lastMove, setLastMove] = useState(null);

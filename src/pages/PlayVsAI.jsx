@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { invokeAI } from '@/lib/aiClient';
 import ChessBoard from '@/components/chess/ChessBoard';
@@ -25,6 +26,7 @@ function calcElo(playerElo, aiElo, result) {
 }
 
 export default function PlayVsAI() {
+  useRoomBackground('room-game-hall');
   const [phase, setPhase] = useState('setup');
   const [difficulty, setDifficulty] = useState(isPremium() ? 'intermediate' : 'easy');
   const [playerColor, setPlayerColor] = useState('white');

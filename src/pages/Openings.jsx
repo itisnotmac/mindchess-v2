@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useMemo } from 'react';
 import ChessBoard from '@/components/chess/ChessBoard';
 import { createGame, makeSanMove, getFen } from '@/lib/chessEngine';
@@ -5,6 +6,7 @@ import { OPENINGS } from '@/lib/openings';
 import { BookOpen, ChevronLeft, ChevronRight, RotateCcw, Play, Pause, List } from 'lucide-react';
 
 export default function Openings() {
+  useRoomBackground('room-castle-gate');
   const [opening, setOpening] = useState(null);
   const [variation, setVariation] = useState(null);
   const [moveIndex, setMoveIndex] = useState(0);

@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useMemo, useEffect } from 'react';
 import { invokeAI } from '@/lib/aiClient';
 import ChessBoard from '@/components/chess/ChessBoard';
@@ -9,6 +10,8 @@ import ReactMarkdown from 'react-markdown';
 import ReadAloudButton from '@/components/ReadAloudButton';
 import MobileSelect from '@/components/MobileSelect';
 import { useLocation } from 'react-router-dom';
+import PremiumGate from '@/components/PremiumGate';
+import { isPremium } from '@/lib/premium';
 
 const DEPTH = 3;
 
@@ -34,6 +37,7 @@ function fmtEval(cp) {
 }
 
 export default function AnalyzeGame() {
+  useRoomBackground('room-observatory');
   const [phase, setPhase] = useState('input');
   const [pgn, setPgn] = useState('');
   const [side, setSide] = useState('white');
@@ -117,6 +121,16 @@ Write a concise coaching summary (markdown, ~180 words). Cover: what the student
       runAnalysis(location.state.pgn, location.state.side || 'white');
     }
   }, []);
+
+  if (!isPremium()) {
+    return (
+      <div className="p-6 md:p-8 max-w-2xl mx-auto">
+        <PremiumGate feature="game_analyzer" lockStyle="overlay">
+          <div className="rounded-2xl border border-border p-8 text-center opacity-0 h-64" />
+        </PremiumGate>
+      </div>
+    );
+  }
 
   if (phase === 'input') {
     return (

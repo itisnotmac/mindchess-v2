@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Crown, Brain, Target, Gamepad2, BookOpen, Loader2 } from 'lucide-react';
@@ -5,6 +6,7 @@ import { storage } from '@/lib/storage';
 import ProfileStats from '@/components/ProfileStats';
 
 export default function Dashboard() {
+  useRoomBackground('room-throne');
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 

@@ -1,7 +1,9 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React from 'react';
 import { Crown, Brain, Gamepad2, BookOpen, Target, Sparkles } from 'lucide-react';
 
 export default function About() {
+  useRoomBackground('room-forge');
   return (
     <div className="p-6 md:p-10 max-w-3xl mx-auto">
       <div className="flex items-center gap-3 mb-6">

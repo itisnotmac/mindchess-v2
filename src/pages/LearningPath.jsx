@@ -1,3 +1,4 @@
+import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { storage } from '@/lib/storage';
@@ -9,6 +10,7 @@ const MODULE_ICON = {
 };
 
 export default function LearningPath() {
+  useRoomBackground('room-library');
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(null);
