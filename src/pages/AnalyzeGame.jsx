@@ -9,7 +9,7 @@ import { Microscope, Loader2, ArrowLeft, ChevronLeft, ChevronRight, RotateCcw, W
 import ReactMarkdown from 'react-markdown';
 import ReadAloudButton from '@/components/ReadAloudButton';
 import MobileSelect from '@/components/MobileSelect';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PremiumGate from '@/components/PremiumGate';
 import { isPremium } from '@/lib/premium';
 
@@ -47,6 +47,7 @@ export default function AnalyzeGame() {
   const [error, setError] = useState('');
   const [viewIndex, setViewIndex] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const runAnalysis = (pgnText = pgn, sideText = side) => {
     setError('');
@@ -125,6 +126,9 @@ Write a concise coaching summary (markdown, ~180 words). Cover: what the student
   if (!isPremium()) {
     return (
       <div className="p-6 md:p-8 max-w-2xl mx-auto">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 text-sm">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
         <PremiumGate feature="game_analyzer" lockStyle="overlay">
           <div className="rounded-2xl border border-border p-8 text-center opacity-0 h-64" />
         </PremiumGate>

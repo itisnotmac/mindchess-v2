@@ -280,10 +280,17 @@ export default function PlayVsAI() {
                 className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-all teal-glow-sm">
                 Rematch
               </button>
-              <button onClick={analyzeGame}
-                className="w-full border border-primary/40 text-primary py-2.5 rounded-lg font-medium hover:bg-primary/10 transition-all">
-                Analyze Game
-              </button>
+              {isPremium() ? (
+                <button onClick={analyzeGame}
+                  className="w-full border border-primary/40 text-primary py-2.5 rounded-lg font-medium hover:bg-primary/10 transition-all">
+                  Analyze Game
+                </button>
+              ) : (
+                <button onClick={() => navigate('/upgrade')}
+                  className="w-full border border-yellow-500/40 text-yellow-400 py-2.5 rounded-lg font-medium hover:bg-yellow-500/10 transition-all flex items-center justify-center gap-2">
+                  <Lock className="w-4 h-4" /> Unlock Game Analysis
+                </button>
+              )}
               <button onClick={() => setPhase('setup')}
                 className="w-full border border-border py-2.5 rounded-lg font-medium hover:bg-secondary transition-all">
                 Return to Lobby
