@@ -94,7 +94,7 @@ export default function Layout() {
   return (
   <SettingsProvider>
   <div className="flex flex-col h-screen overflow-hidden" style={{ background: 'transparent' }}>
-      <header className="md:hidden shrink-0 flex items-center justify-between px-3 py-2 glass-header" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.5rem)' }}>
+      <header className="md:hidden shrink-0 flex items-center justify-between px-3 py-2 glass-header" style={{ paddingTop: 'calc(env(safe-area-inset-top, 24px) + 0.5rem)' }}>
         <div className="flex items-center min-w-[44px]">
           {meta.back ? (
             <button onClick={() => navigate(-1)} className="w-11 h-11 flex items-center justify-center text-foreground rounded-lg hover:bg-secondary" aria-label="Back">
@@ -155,7 +155,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 4rem)' }}>
+      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 4rem)' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -171,7 +171,7 @@ export default function Layout() {
       </main>
       </div>
 
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-nav flex justify-around z-40" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.5rem)', paddingTop: '0.5rem' }}>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-nav flex justify-around z-40" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 0.5rem)', paddingTop: '0.5rem' }}>
         {CORE_TABS.map(item => {
           const active = item.to === '/' ? path === '/' : path.startsWith(item.to);
           return (
