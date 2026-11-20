@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Gamepad2, Brain, BookOpen, Target, User, Crown, MessageSquare, Settings, Library, Microscope, GraduationCap, ChevronLeft, Menu as MenuIcon } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Target, User, Crown, MessageSquare, Settings, Library, Microscope, GraduationCap, ChevronLeft, Menu as MenuIcon } from 'lucide-react';
 import AIChatPanel from '@/components/AIChatPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SettingsProvider } from '@/lib/SettingsContext';
@@ -13,8 +13,6 @@ const CORE_TABS = [
 ];
 
 const SECONDARY = [
-  { to: '/play', label: 'Play', icon: Gamepad2 },
-  { to: '/tactics', label: 'Tactics', icon: Brain },
   { to: '/library', label: 'Library', icon: Library },
   { to: '/analyze', label: 'Analyze', icon: Microscope },
   { to: '/about', label: 'About', icon: Crown },
