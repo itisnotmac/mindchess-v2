@@ -9,12 +9,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 const CORE_TABS = [
   { to: '/', label: 'Home', icon: LayoutDashboard },
   { to: '/learn', label: 'Learn', icon: GraduationCap },
-  { to: '/play', label: 'Play', icon: Gamepad2 },
-  { to: '/tactics', label: 'Tactics', icon: Brain },
   { to: '/profile', label: 'Profile', icon: User },
 ];
 
 const SECONDARY = [
+  { to: '/play', label: 'Play', icon: Gamepad2 },
+  { to: '/tactics', label: 'Tactics', icon: Brain },
   { to: '/library', label: 'Library', icon: Library },
   { to: '/analyze', label: 'Analyze', icon: Microscope },
   { to: '/about', label: 'About', icon: Crown },
