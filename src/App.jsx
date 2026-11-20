@@ -14,6 +14,7 @@ import Profile from '@/pages/Profile';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import TermsAndConditions from '@/pages/TermsAndConditions';
 import GameLibrary from '@/pages/GameLibrary';
 import GameDetail from '@/pages/GameDetail';
 import AnalyzeGame from '@/pages/AnalyzeGame';
@@ -36,6 +37,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/library" element={<GameLibrary />} />
             <Route path="/library/:id" element={<GameDetail />} />
             <Route path="/analyze" element={<AnalyzeGame />} />

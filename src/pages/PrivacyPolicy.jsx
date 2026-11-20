@@ -3,7 +3,7 @@ import React from 'react';
 import { Shield } from 'lucide-react';
 
 const EFFECTIVE_DATE = 'November 20, 2025';
-const CONTACT_EMAIL = 'privacy@mindchess.study';
+const CONTACT_EMAIL = 'mindchessgame@gmail.com';
 const APP_NAME = 'Mind Chess';
 const APP_ID = 'io.mindchess.app';
 const WEBSITE = 'mindchess.study';
