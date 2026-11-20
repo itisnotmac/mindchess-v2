@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRoomBackground } from '../hooks/useRoomBackground';
 import { useSettings } from '../lib/SettingsContext';
 import { storage } from '../lib/storage';
-import { Volume2, VolumeX, Sun, Moon, Contrast, Eye, Trash2, AlertTriangle } from 'lucide-react';
+import { useAuth } from '../lib/AuthContext';
+import { Volume2, VolumeX, Sun, Moon, Contrast, Eye, Trash2, AlertTriangle, LogOut, User } from 'lucide-react';
 
 const THEMES = [
   { value: 'dark',          label: 'Dark',          icon: Moon },
@@ -69,24 +70,42 @@ export default function Settings() {
     colorblindMode, setColorblindMode,
   } = useSettings();
 
+  const { user, logOut, deleteAccount } = useAuth();
+
   // Deletion confirm states
   const [confirmData, setConfirmData] = useState(false);
   const [confirmAccount, setConfirmAccount] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   function handleDeleteData() {
     storage.deleteAllData();
     setConfirmData(false);
-    // Navigate home so the app resets visually
     navigate('/');
   }
 
-  function handleDeleteAccount() {
-    // Phase 1 (pre-Firebase): wipe local data and show done state.
-    // Phase 2 (post-Firebase): also call Firebase Auth deleteUser()
-    // and Firestore deleteDoc() here before navigating.
-    storage.deleteAllData();
-    setConfirmAccount(false);
-    navigate('/');
+  async function handleDeleteAccount() {
+    setDeleteError('');
+    setDeleteLoading(true);
+    try {
+      await deleteAccount(deletePassword);
+      storage.deleteAllData();
+      navigate('/welcome');
+    } catch (err) {
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        setDeleteError('Incorrect password.');
+      } else {
+        setDeleteError('Something went wrong. Please try again.');
+      }
+    } finally {
+      setDeleteLoading(false);
+    }
+  }
+
+  async function handleSignOut() {
+    await logOut();
+    navigate('/welcome');
   }
 
   return (
@@ -112,7 +131,7 @@ export default function Settings() {
 
             <SettingRow
               label="Move Narration"
-              description="Reads moves aloud (e.g. "e4", "Knight to f3")"
+              description={'Reads moves aloud (e.g. "e4", "Knight to f3")'}
             >
               <Toggle
                 enabled={ttsEnabled}
@@ -168,80 +187,110 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* ── Data & Account ────────────────────────────────────────────── */}
+        {/* ── Account ───────────────────────────────────────────────────── */}
         <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-5">
-          <SectionLabel>Data &amp; Account</SectionLabel>
+          <SectionLabel>Account</SectionLabel>
 
-          {/* Delete local data */}
-          <div className="mb-4">
-            <SettingRow
-              label="Delete My Data"
-              description="Wipes all progress, XP, and settings from this device. Cannot be undone."
-            >
-              {!confirmData ? (
+          {/* Signed-in email display */}
+          {user && (
+            <div className="flex items-center gap-3 mb-4 px-1">
+              <User size={15} className="text-primary shrink-0" />
+              <p className="text-white/60 text-sm truncate">{user.email}</p>
+            </div>
+          )}
+
+          {/* Sign out */}
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/20 text-white/60 text-sm font-medium bg-white/5 hover:bg-white/10 transition-all mb-4"
+          >
+            <LogOut size={15} /> Sign Out
+          </button>
+
+          {/* Divider */}
+          <div className="border-t border-white/10 pt-4">
+            <SectionLabel>Data</SectionLabel>
+
+            {/* Delete local data */}
+            <div className="mb-4">
+              <SettingRow
+                label="Delete My Data"
+                description="Wipes all progress, XP, and settings from this device. Cannot be undone."
+              >
+                {!confirmData ? (
+                  <button
+                    onClick={() => setConfirmData(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-500/40 text-red-400 text-sm font-medium bg-red-500/10 hover:bg-red-500/20 transition-all"
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setConfirmData(false)}
+                      className="px-3 py-2 rounded-xl border border-white/20 text-white/50 text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleDeleteData}
+                      className="px-3 py-2 rounded-xl border border-red-500 bg-red-500/20 text-red-300 text-sm font-semibold"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                )}
+              </SettingRow>
+            </div>
+
+            {/* Delete account */}
+            <div className="border-t border-white/10 pt-4">
+              <div className="flex items-start gap-3 mb-3">
+                <AlertTriangle size={15} className="text-orange-400 mt-0.5 shrink-0" />
+                <p className="text-white/50 text-xs leading-relaxed">
+                  Account deletion permanently removes your account and all data. This cannot be undone.
+                </p>
+              </div>
+              {!confirmAccount ? (
                 <button
-                  onClick={() => setConfirmData(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-500/40 text-red-400 text-sm font-medium bg-red-500/10 hover:bg-red-500/20 transition-all"
+                  onClick={() => { setConfirmAccount(true); setDeleteError(''); setDeletePassword(''); }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-600/50 text-red-400 text-sm font-medium bg-red-600/10 hover:bg-red-600/20 transition-all"
                 >
-                  <Trash2 size={14} /> Delete
+                  <Trash2 size={15} /> Delete Account
                 </button>
               ) : (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setConfirmData(false)}
-                    className="px-3 py-2 rounded-xl border border-white/20 text-white/50 text-sm"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteData}
-                    className="px-3 py-2 rounded-xl border border-red-500 bg-red-500/20 text-red-300 text-sm font-semibold"
-                  >
-                    Confirm
-                  </button>
+                <div className="space-y-3">
+                  <p className="text-red-400 text-xs font-semibold text-center">
+                    Enter your password to confirm deletion
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="Your password"
+                    value={deletePassword}
+                    onChange={e => setDeletePassword(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg bg-black/60 border border-border text-white placeholder:text-muted-foreground text-sm focus:outline-none focus:border-red-500"
+                  />
+                  {deleteError && (
+                    <p className="text-xs text-red-400 text-center">{deleteError}</p>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setConfirmAccount(false); setDeleteError(''); setDeletePassword(''); }}
+                      className="flex-1 py-2.5 rounded-xl border border-white/20 text-white/50 text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={deleteLoading || !deletePassword}
+                      className="flex-1 py-2.5 rounded-xl border border-red-600 bg-red-600/20 text-red-300 text-sm font-semibold disabled:opacity-50"
+                    >
+                      {deleteLoading ? 'Deleting…' : 'Delete Forever'}
+                    </button>
+                  </div>
                 </div>
               )}
-            </SettingRow>
-          </div>
-
-          {/* Delete account */}
-          <div className="border-t border-white/10 pt-4">
-            <div className="flex items-start gap-3 mb-3">
-              <AlertTriangle size={15} className="text-orange-400 mt-0.5 shrink-0" />
-              <p className="text-white/50 text-xs leading-relaxed">
-                Account deletion permanently removes your profile and all data.
-                Once Firebase accounts are enabled, this will also delete your
-                server-side account.
-              </p>
             </div>
-            {!confirmAccount ? (
-              <button
-                onClick={() => setConfirmAccount(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-600/50 text-red-400 text-sm font-medium bg-red-600/10 hover:bg-red-600/20 transition-all"
-              >
-                <Trash2 size={15} /> Delete Account
-              </button>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-center text-red-400 text-xs font-semibold">
-                  This cannot be undone. Are you sure?
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setConfirmAccount(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-white/20 text-white/50 text-sm"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="flex-1 py-2.5 rounded-xl border border-red-600 bg-red-600/20 text-red-300 text-sm font-semibold"
-                  >
-                    Delete Forever
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
