@@ -76,7 +76,7 @@ export default function AIChatPanel({ open, onClose }) {
               onClick={() => { onClose(); navigate('/upgrade'); }}
               className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-full transition-colors"
             >
-              Upgrade — $2.99/mo
+              Unlock Master's Vault — $4.99
             </button>
             <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-300">
               Maybe later
