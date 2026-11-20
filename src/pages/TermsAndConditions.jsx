@@ -7,7 +7,7 @@ const APP_ID = 'io.mindchess.app';
 const WEBSITE = 'mindchess.study';
 
 export default function TermsAndConditions() {
-  useRoomBackground('room-hall-of-records');
+  useRoomBackground('room-terms');
 
   return (
     <div className="min-h-screen px-4 py-8 pb-24">

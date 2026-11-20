@@ -69,6 +69,8 @@
   body.room-dungeon      { background-image: url('/room-dungeon.jpg'); }
   body.room-observatory  { background-image: url('/room-observatory.jpg'); }
   body.room-forge        { background-image: url('/room-forge.jpg'); }
+  body.room-privacy      { background-image: url('/privacypolicypage.png'); }
+  body.room-terms        { background-image: url('/termspage.png'); }
 
   /* Dark overlay so text stays readable over the castle image */
   body::before {

@@ -9,7 +9,7 @@ const APP_ID = 'io.mindchess.app';
 const WEBSITE = 'mindchess.study';
 
 export default function PrivacyPolicy() {
-  useRoomBackground('room-hall-of-records');
+  useRoomBackground('room-privacy');
   return (
     <div className="p-6 md:p-10 max-w-3xl mx-auto">
       <div className="flex items-center gap-3 mb-2">
