@@ -15,8 +15,6 @@ const CORE_TABS = [
 ];
 
 const SECONDARY = [
-  { to: '/openings', label: 'Openings', icon: BookOpen },
-  { to: '/endgames', label: 'Endgames', icon: Target },
   { to: '/library', label: 'Library', icon: Library },
   { to: '/analyze', label: 'Analyze', icon: Microscope },
   { to: '/about', label: 'About', icon: Crown },
@@ -100,8 +98,6 @@ export default function Layout() {
             <button onClick={() => navigate(-1)} className="w-11 h-11 flex items-center justify-center text-foreground rounded-lg hover:bg-secondary" aria-label="Back">
               <ChevronLeft className="w-6 h-6" />
             </button>
-          ) : path === '/' ? (
-            <Crown className="w-7 h-7 text-primary teal-text-glow ml-1" />
           ) : (
             <button onClick={() => setMenuOpen(true)} className="w-11 h-11 flex items-center justify-center text-muted-foreground rounded-lg hover:bg-secondary" aria-label="Menu">
               <MenuIcon className="w-5 h-5" />
