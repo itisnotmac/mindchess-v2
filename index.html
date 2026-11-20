@@ -10,19 +10,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <div id="safearea-debug" style="position:fixed;bottom:0;left:0;right:0;background:rgba(255,0,0,0.85);color:white;font-size:11px;z-index:99999;padding:6px 8px;"></div>
-    <script>
-      setTimeout(function() {
-        var el = document.getElementById('safearea-debug');
-        var probe = document.createElement('div');
-        probe.style.cssText = 'position:fixed;bottom:0;left:0;width:1px;padding-bottom:env(safe-area-inset-bottom,0px);';
-        document.body.appendChild(probe);
-        var sab = getComputedStyle(probe).paddingBottom;
-        probe.style.paddingBottom = 'env(safe-area-inset-top,0px)';
-        var sat = getComputedStyle(probe).paddingBottom;
-        document.body.removeChild(probe);
-        el.textContent = 'safe-area bottom=' + sab + ' top=' + sat + ' | innerH=' + window.innerHeight + ' screenH=' + screen.height;
-      }, 800);
-    </script>
   </body>
 </html>
