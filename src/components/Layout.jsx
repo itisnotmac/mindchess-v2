@@ -155,7 +155,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: '6rem' }}>
+      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: '5rem' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -163,7 +163,7 @@ export default function Layout() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -24 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="h-full"
+            className="min-h-full"
           >
             <Outlet />
           </motion.div>
