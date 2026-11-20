@@ -23,6 +23,13 @@
   "android": {
     "allowMixedContent": false,
     "captureInput": true,
-    "webContentsDebuggingEnabled": false
+    "webContentsDebuggingEnabled": false,
+    "overrideUserAgent": "",
+    "appendUserAgent": "",
+    "backgroundColor": "#000000",
+    "allowNavigation": []
+  },
+  "server": {
+    "androidScheme": "https"
   }
 }

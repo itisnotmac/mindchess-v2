@@ -69,11 +69,11 @@ export const PUZZLES = [
   },
   {
     fen: "2k5/8/1K6/8/8/8/7Q/8 w - - 0 1",
-    solution_moves: ["h2h8"],
+    solution_moves: ["h2c7"],
     theme: "mate_in_1",
     rating: 750,
-    description: "Queen + king mate with the king on the a-file.",
-    explanation: "Qh8# — the queen checks the king on c8 along the 8th rank. The white king on b6 controls a7, b7, and c7, while the queen on h8 controls b8 and d8 along the 8th rank. The black king is completely surrounded. Note how the white king stands a knight's move away, just close enough to guard the escape squares without being adjacent to the enemy king (which would be illegal)."
+    description: "Queen + king mate — find the square that covers every escape.",
+    explanation: "Qc7# — the queen moves to c7, delivering checkmate. The white king on b6 covers a7, b7, and a5, while the queen on c7 covers b8, d8, b7, d7, and d6. The black king on c8 has no escape: b8 and d8 are controlled by the queen, a7 and b7 are controlled by the white king, and c7 itself is the queen. Note that Qh8+ fails because the king escapes to d7 — always check that every flight square is covered before playing a 'mate'."
   },
   {
     fen: "7k/6pp/8/8/8/8/8/Q6K w - - 0 1",
@@ -111,7 +111,7 @@ export const PUZZLES = [
   // ───────────────────────── MATE IN 2 ─────────────────────────
   {
     fen: "6k1/5ppp/8/4b3/8/Q7/8/7K w - - 0 1",
-    solution_moves: ["a3a8"],
+    solution_moves: ["a3a8", "e5b8", "a8b8"],
     theme: "mate_in_2",
     rating: 1100,
     description: "Find the forcing check that leads to mate in two.",
