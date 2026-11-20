@@ -155,7 +155,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 4rem)' }}>
+      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: '6rem' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
