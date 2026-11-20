@@ -1,6 +1,6 @@
 import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { invokeAI } from '@/lib/aiClient';
+import { getCommentary } from '@/lib/commentary';
 import ChessBoard from '@/components/chess/ChessBoard';
 import { createGame, makeMove, getFen, getTurn, isCheckmate, isDraw, isStalemate, isCheck, isGameOver, getAIMoveAsync } from '@/lib/chessEngine';
 import { playSound } from '@/lib/sound';
@@ -55,13 +55,9 @@ export default function PlayVsAI() {
     }
   }, [commentary]);
 
-  const fetchCommentary = useCallback(async (currentFen, moveList, lastMoveSan) => {
-    try {
-      const response = await invokeAI(
-        `You are a chess coach giving brief live commentary. Position FEN: ${currentFen}. Moves: ${moveList.join(' ')}. Last move: ${lastMoveSan}. Give a 1-2 sentence coaching insight. Be encouraging and specific. Do not use markdown.`
-      );
-      setCommentary(prev => [...prev, { moveNum: moveList.length, text: response }]);
-    } catch (e) {}
+  const fetchCommentary = useCallback((currentFen, moveList, lastMoveSan) => {
+    const text = getCommentary(lastMoveSan, moveList.length);
+    setCommentary(prev => [...prev, { moveNum: moveList.length, text }]);
   }, []);
 
   const startGame = (diff, color) => {
