@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { validateUsername, isUsernameTaken } from '@/lib/AuthContext';
 import { Brain, Swords, BookOpen, Crown, Star, ChevronRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 
 const SLIDES = [
@@ -51,6 +52,8 @@ export default function Welcome() {
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [displayNameError, setDisplayNameError] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -72,10 +75,26 @@ export default function Welcome() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+
+    if (isSignUp) {
+      // Validate display name before hitting network
+      const nameErr = validateUsername(displayName);
+      if (nameErr) {
+        setDisplayNameError(nameErr);
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (isSignUp) {
-        await signUp(email, password);
+        const taken = await isUsernameTaken(displayName);
+        if (taken) {
+          setDisplayNameError('That display name is already taken.');
+          setLoading(false);
+          return;
+        }
+        await signUp(email, password, displayName);
       } else {
         await signIn(email, password);
       }
@@ -95,6 +114,7 @@ export default function Welcome() {
       case 'auth/user-not-found':
       case 'auth/wrong-password':
       case 'auth/invalid-credential': return 'Email or password is incorrect.';
+      case 'username/taken': return 'That display name is already taken.';
       default: return 'Something went wrong. Please try again.';
     }
   }
@@ -121,6 +141,33 @@ export default function Welcome() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Display name"
+                  value={displayName}
+                  onChange={e => { setDisplayName(e.target.value); setDisplayNameError(''); }}
+                  onBlur={() => {
+                    if (displayName) setDisplayNameError(validateUsername(displayName) || '');
+                  }}
+                  required
+                  maxLength={24}
+                  autoComplete="nickname"
+                  className={`w-full px-4 py-3 rounded-lg bg-black/60 border text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 transition ${
+                    displayNameError
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                      : 'border-border focus:border-primary focus:ring-primary'
+                  }`}
+                />
+                {displayNameError && (
+                  <p className="text-xs text-red-400 mt-1 pl-1">{displayNameError}</p>
+                )}
+                <p className="text-xs text-muted-foreground mt-1 pl-1">
+                  2–24 characters · letters, numbers, spaces, hyphens, underscores
+                </p>
+              </div>
+            )}
             <div>
               <input
                 type="email"
@@ -165,7 +212,7 @@ export default function Welcome() {
           <p className="text-center text-sm text-muted-foreground mt-6">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button
-              onClick={() => { setIsSignUp(v => !v); setError(''); }}
+              onClick={() => { setIsSignUp(v => !v); setError(''); setDisplayNameError(''); }}
               className="text-primary hover:underline font-medium"
             >
               {isSignUp ? 'Sign in' : 'Create one'}
