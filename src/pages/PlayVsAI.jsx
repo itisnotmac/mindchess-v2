@@ -361,16 +361,10 @@ export default function PlayVsAI() {
                 ⚔️ Rematch
               </button>
 
-              {isPremium() ? (
+              {isPremium() && (
                 <button onClick={analyzeGame}
                   className="w-full border border-primary/40 text-primary py-3 rounded-xl font-medium text-sm hover:bg-primary/10 transition-all active:scale-95 flex items-center justify-center gap-2">
                   Analyze Game <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button onClick={() => navigate('/upgrade')}
-                  className="w-full py-3 rounded-xl font-medium text-sm transition-all active:scale-95 flex items-center justify-center gap-2"
-                  style={{ border: '1px solid rgba(255,179,0,0.3)', color: '#FFB300', background: 'rgba(255,179,0,0.06)' }}>
-                  <Lock className="w-4 h-4" /> Unlock Game Analysis
                 </button>
               )}
 
