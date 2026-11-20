@@ -1,6 +1,6 @@
 import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React from 'react';
-import { Crown, Brain, Gamepad2, BookOpen, Target, Sparkles } from 'lucide-react';
+import { Crown, Sparkles } from 'lucide-react';
 
 export default function About() {
   useRoomBackground('room-forge');
@@ -56,20 +56,6 @@ export default function About() {
           your streaks, and your rating all live in one place — so you can see exactly how far you have come
           and what to study next. We are just getting started, and we would love for you to grow with us.
         </p>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8">
-        {[
-          { icon: Gamepad2, label: 'Play vs AI' },
-          { icon: Brain, label: 'Tactics' },
-          { icon: BookOpen, label: 'Openings' },
-          { icon: Target, label: 'Endgames' },
-        ].map((m, i) => (
-          <div key={i} className="bg-card border border-border rounded-lg p-3 flex flex-col items-center gap-1 teal-border-glow">
-            <m.icon className="w-6 h-6 text-primary" />
-            <span className="text-xs font-medium">{m.label}</span>
-          </div>
-        ))}
       </div>
 
       <div className="flex items-center gap-2 mt-8 text-sm text-muted-foreground">
