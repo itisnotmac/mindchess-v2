@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Crown, Brain, Swords, Microscope, Check } from 'lucide-react';
-import { isPremium, unlockPremium, revokePremium } from '@/lib/premium';
-import { useToast } from '@/components/ui/use-toast';
+import { isPremium, unlockPremium } from '@/lib/premium';
 
 const FEATURES = [
   {
@@ -24,10 +23,7 @@ const FEATURES = [
 
 export default function Upgrade() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [already, setAlready] = useState(isPremium());
-  const tapCount = useRef(0);
-  const tapTimer = useRef(null);
 
   const handlePurchase = () => {
     // TODO: wire RevenueCat purchase flow here
@@ -35,26 +31,6 @@ export default function Upgrade() {
     unlockPremium();
     setAlready(true);
     navigate(-1);
-  };
-
-  // Hidden dev unlock: tap crown 7 times within 3 seconds
-  const handleCrownTap = () => {
-    tapCount.current += 1;
-    clearTimeout(tapTimer.current);
-    if (tapCount.current >= 7) {
-      tapCount.current = 0;
-      if (isPremium()) {
-        revokePremium();
-        setAlready(false);
-        toast({ title: '🔒 Dev: Premium revoked', duration: 2000 });
-      } else {
-        unlockPremium();
-        setAlready(true);
-        toast({ title: '👑 Dev: Premium unlocked', duration: 2000 });
-      }
-    } else {
-      tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 3000);
-    }
   };
 
   return (
@@ -67,8 +43,7 @@ export default function Upgrade() {
         </div>
 
         <div
-          className="relative flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/15 border border-yellow-500/40 mb-4 cursor-default select-none"
-          onClick={handleCrownTap}
+          className="relative flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/15 border border-yellow-500/40 mb-4"
         >
           <Crown className="w-10 h-10 text-yellow-400" />
         </div>
