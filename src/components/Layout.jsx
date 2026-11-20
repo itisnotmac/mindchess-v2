@@ -151,7 +151,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: '5rem' }}>
+      <main className="flex-1 overflow-auto md:pb-0" style={{ paddingBottom: '7rem' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -167,7 +167,7 @@ export default function Layout() {
       </main>
       </div>
 
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-nav flex justify-around z-40" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 0.5rem)', paddingTop: '0.5rem' }}>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-nav flex justify-around z-40" style={{ paddingBottom: '3rem', paddingTop: '0.5rem' }}>
         {CORE_TABS.map(item => {
           const active = item.to === '/' ? path === '/' : path.startsWith(item.to);
           return (
