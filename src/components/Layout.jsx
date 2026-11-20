@@ -26,6 +26,7 @@ const SIDEBAR_ITEMS = [...CORE_TABS, ...SECONDARY];
 function getRouteMeta(path) {
   if (path === '/') return { title: 'Mind Chess', back: false };
   if (path.startsWith('/library/')) return { title: 'Game', back: true };
+  if (path.startsWith('/upgrade')) return { title: "Master's Vault", back: true };
   if (path.startsWith('/learn')) return { title: 'Learn', back: false };
   if (path.startsWith('/play')) return { title: 'Play', back: false };
   if (path.startsWith('/tactics')) return { title: 'Tactics', back: false };

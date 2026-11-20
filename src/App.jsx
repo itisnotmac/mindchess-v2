@@ -17,6 +17,7 @@ import GameLibrary from '@/pages/GameLibrary';
 import GameDetail from '@/pages/GameDetail';
 import AnalyzeGame from '@/pages/AnalyzeGame';
 import LearningPath from '@/pages/LearningPath';
+import Upgrade from '@/pages/Upgrade';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/library/:id" element={<GameDetail />} />
             <Route path="/analyze" element={<AnalyzeGame />} />
             <Route path="/learn" element={<LearningPath />} />
+            <Route path="/upgrade" element={<Upgrade />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
