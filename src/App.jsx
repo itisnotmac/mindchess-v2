@@ -13,6 +13,7 @@ import EndgameLab from '@/pages/EndgameLab';
 import Profile from '@/pages/Profile';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import GameLibrary from '@/pages/GameLibrary';
 import GameDetail from '@/pages/GameDetail';
 import AnalyzeGame from '@/pages/AnalyzeGame';
@@ -34,6 +35,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/library" element={<GameLibrary />} />
             <Route path="/library/:id" element={<GameDetail />} />
             <Route path="/analyze" element={<AnalyzeGame />} />
