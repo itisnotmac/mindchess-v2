@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { SettingsProvider } from '@/lib/SettingsContext';
 import PageNotFound from './lib/PageNotFound';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from '@/components/Layout';
@@ -15,6 +16,7 @@ import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsAndConditions from '@/pages/TermsAndConditions';
+import Settings from '@/pages/Settings';
 import GameLibrary from '@/pages/GameLibrary';
 import GameDetail from '@/pages/GameDetail';
 import AnalyzeGame from '@/pages/AnalyzeGame';
@@ -24,6 +26,7 @@ import Upgrade from '@/pages/Upgrade';
 function App() {
   return (
     <QueryClientProvider client={queryClientInstance}>
+      <SettingsProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -38,6 +41,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/library" element={<GameLibrary />} />
             <Route path="/library/:id" element={<GameDetail />} />
             <Route path="/analyze" element={<AnalyzeGame />} />
@@ -48,6 +52,7 @@ function App() {
         </Routes>
       </Router>
       <Toaster />
+      </SettingsProvider>
     </QueryClientProvider>
   );
 }

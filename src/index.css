@@ -71,6 +71,35 @@
   body.room-forge        { background-image: url('/room-forge.jpg'); }
   body.room-privacy      { background-image: url('/privacypolicypage.png'); }
   body.room-terms        { background-image: url('/termspage.png'); }
+  body.room-settings     { background-image: url('/settingsPage.png'); }
+
+  /* ── Theme overrides ────────────────────────────────────────────────── */
+  body.theme-light {
+    background-color: #f0ede8;
+    --foreground: 220 15% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 220 15% 10%;
+    --muted-foreground: 220 10% 40%;
+  }
+  body.theme-light::before {
+    background: rgba(240, 237, 232, 0.55);
+  }
+  body.theme-high-contrast {
+    background-color: #000;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --muted-foreground: 0 0% 80%;
+    --border: 0 0% 40%;
+  }
+  body.theme-high-contrast::before {
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  /* ── Colorblind filters ─────────────────────────────────────────────── */
+  body.cb-deuteranopia  { filter: url('#cb-deuteranopia'); }
+  body.cb-protanopia    { filter: url('#cb-protanopia'); }
+  body.cb-tritanopia    { filter: url('#cb-tritanopia'); }
 
   /* Dark overlay so text stays readable over the castle image */
   body::before {

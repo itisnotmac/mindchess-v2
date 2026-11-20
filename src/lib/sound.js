@@ -28,6 +28,7 @@ function playTone(freq, duration, type = 'sine', volume = 0.15, startTime = 0) {
 
 export function playSound(type) {
   try {
+    if (localStorage.getItem('mc_sound') === 'false') return;
     switch (type) {
       case 'move':
         playTone(200, 0.08, 'triangle', 0.12);

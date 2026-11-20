@@ -10,5 +10,35 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Colorblind SVG filters (invisible; referenced by CSS filter: url()) -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute">
+      <defs>
+        <!-- Deuteranopia (red-green, green-weak) -->
+        <filter id="cb-deuteranopia">
+          <feColorMatrix type="matrix" values="
+            0.625 0.375 0     0 0
+            0.7   0.3   0     0 0
+            0     0.3   0.7   0 0
+            0     0     0     1 0"/>
+        </filter>
+        <!-- Protanopia (red-green, red-weak) -->
+        <filter id="cb-protanopia">
+          <feColorMatrix type="matrix" values="
+            0.567 0.433 0     0 0
+            0.558 0.442 0     0 0
+            0     0.242 0.758 0 0
+            0     0     0     1 0"/>
+        </filter>
+        <!-- Tritanopia (blue-yellow) -->
+        <filter id="cb-tritanopia">
+          <feColorMatrix type="matrix" values="
+            0.95  0.05  0     0 0
+            0     0.433 0.567 0 0
+            0     0.475 0.525 0 0
+            0     0     0     1 0"/>
+        </filter>
+      </defs>
+    </svg>
   </body>
 </html>

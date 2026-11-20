@@ -17,6 +17,7 @@ const SECONDARY = [
   { to: '/analyze', label: 'Analyze', icon: Microscope },
   { to: '/about', label: 'About', icon: Crown },
   { to: '/contact', label: 'Contact', icon: MessageSquare },
+  { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const SIDEBAR_ITEMS = [...CORE_TABS, ...SECONDARY];
@@ -35,6 +36,7 @@ function getRouteMeta(path) {
   if (path.startsWith('/profile')) return { title: 'Profile', back: false };
   if (path.startsWith('/about')) return { title: 'About', back: false };
   if (path.startsWith('/contact')) return { title: 'Contact', back: false };
+  if (path.startsWith('/settings')) return { title: 'Settings', back: false };
   if (path.startsWith('/privacy')) return { title: 'Privacy Policy', back: true };
   if (path.startsWith('/terms')) return { title: 'Terms & Conditions', back: true };
   return { title: 'Mind Chess', back: false };

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 const ROOM_CLASSES = [
   'room-throne', 'room-game-hall', 'room-library', 'room-war-room',
   'room-hall-of-records', 'room-castle-gate', 'room-dungeon',
-  'room-observatory', 'room-forge', 'room-privacy', 'room-terms',
+  'room-observatory', 'room-forge', 'room-privacy', 'room-terms', 'room-settings',
 ];
 
 /**
