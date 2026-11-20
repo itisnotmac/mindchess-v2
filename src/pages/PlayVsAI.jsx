@@ -8,7 +8,7 @@ import { storage } from '@/lib/storage';
 import { getLevelForXP, canAccess } from '@/lib/progression';
 import LevelGate from '@/components/LevelGate';
 import { isPremium } from '@/lib/premium';
-import { Gamepad2, RotateCcw, ArrowLeft, Bot, Loader2, Lock } from 'lucide-react';
+import { Gamepad2, RotateCcw, ArrowLeft, Bot, Loader2, Lock, Trophy, Skull, Handshake, TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DIFFICULTIES = [
@@ -257,42 +257,125 @@ export default function PlayVsAI() {
       </div>
 
       {phase === 'gameover' && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-primary/30 rounded-xl p-8 max-w-md w-full teal-glow text-center">
-            <h2 className="text-3xl font-bold mb-2">
-              {gameResult === 'win' ? <span className="text-[#39FF14]">Victory!</span> :
-               gameResult === 'loss' ? <span className="text-destructive">Defeat</span> :
-               <span className="text-[#FFB300]">Draw</span>}
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              {gameResult === 'win' ? 'You outplayed the AI!' : gameResult === 'loss' ? 'The AI got the better of you this time.' : 'A balanced fight.'}
-            </p>
-            {eloChange !== 0 && (
-              <div className="mb-4">
-                <span className="text-sm text-muted-foreground">ELO </span>
-                <span className={`font-bold text-lg ${eloChange > 0 ? 'text-[#39FF14]' : 'text-destructive'}`}>
-                  {eloChange > 0 ? '+' : ''}{eloChange}
-                </span>
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" style={{ backdropFilter: 'blur(4px)' }}>
+          <div className="bg-card border rounded-2xl max-w-sm w-full text-center overflow-hidden"
+            style={{
+              borderColor: gameResult === 'win' ? 'rgba(57,255,20,0.4)' : gameResult === 'loss' ? 'rgba(239,68,68,0.3)' : 'rgba(255,179,0,0.3)',
+              boxShadow: gameResult === 'win' ? '0 0 40px rgba(57,255,20,0.15)' : gameResult === 'loss' ? '0 0 40px rgba(239,68,68,0.1)' : '0 0 40px rgba(255,179,0,0.12)',
+            }}>
+
+            {/* Result banner */}
+            <div className="px-8 pt-8 pb-6"
+              style={{
+                background: gameResult === 'win'
+                  ? 'linear-gradient(160deg, rgba(57,255,20,0.08) 0%, transparent 60%)'
+                  : gameResult === 'loss'
+                  ? 'linear-gradient(160deg, rgba(239,68,68,0.06) 0%, transparent 60%)'
+                  : 'linear-gradient(160deg, rgba(255,179,0,0.07) 0%, transparent 60%)',
+              }}>
+
+              {/* Icon */}
+              <div className="flex justify-center mb-4">
+                {gameResult === 'win' ? (
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(57,255,20,0.12)', border: '2px solid rgba(57,255,20,0.3)' }}>
+                    <Trophy className="w-10 h-10" style={{ color: '#39FF14' }} />
+                  </div>
+                ) : gameResult === 'loss' ? (
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(239,68,68,0.1)', border: '2px solid rgba(239,68,68,0.25)' }}>
+                    <Skull className="w-10 h-10 text-destructive" />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(255,179,0,0.1)', border: '2px solid rgba(255,179,0,0.25)' }}>
+                    <Handshake className="w-10 h-10" style={{ color: '#FFB300' }} />
+                  </div>
+                )}
               </div>
-            )}
-            <div className="flex flex-col gap-3">
+
+              {/* Result text */}
+              <h2 className="text-4xl font-black mb-1 tracking-tight"
+                style={{
+                  color: gameResult === 'win' ? '#39FF14' : gameResult === 'loss' ? 'hsl(var(--destructive))' : '#FFB300',
+                }}>
+                {gameResult === 'win' ? 'Victory!' : gameResult === 'loss' ? 'Defeated' : 'Draw'}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {gameResult === 'win' ? 'You outplayed the AI.' : gameResult === 'loss' ? 'The AI got the better of you.' : 'A perfectly balanced game.'}
+              </p>
+            </div>
+
+            {/* Stats row */}
+            <div className="mx-6 mb-6 rounded-xl p-4 flex items-center justify-around"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+
+              {/* ELO change */}
+              <div className="text-center">
+                <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">ELO</div>
+                {eloChange === 0 ? (
+                  <div className="flex items-center justify-center gap-1 font-bold text-lg text-muted-foreground">
+                    <Minus className="w-4 h-4" /> 0
+                  </div>
+                ) : eloChange > 0 ? (
+                  <div className="flex items-center justify-center gap-1 font-bold text-lg" style={{ color: '#39FF14' }}>
+                    <TrendingUp className="w-4 h-4" /> +{eloChange}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-1 font-bold text-lg text-destructive">
+                    <TrendingDown className="w-4 h-4" /> {eloChange}
+                  </div>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.1)' }} />
+
+              {/* Moves played */}
+              <div className="text-center">
+                <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Moves</div>
+                <div className="font-bold text-lg text-foreground">{Math.ceil(moves.length / 2)}</div>
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.1)' }} />
+
+              {/* Difficulty */}
+              <div className="text-center">
+                <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Opponent</div>
+                <div className="font-bold text-sm text-foreground">
+                  {DIFFICULTIES.find(d => d.value === difficulty)?.label ?? difficulty}
+                </div>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex flex-col gap-2.5 px-6 pb-6">
               <button onClick={() => startGame(difficulty, playerColor)}
-                className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-all teal-glow-sm">
-                Rematch
+                className="w-full py-3.5 rounded-xl font-bold text-sm transition-all active:scale-95"
+                style={{
+                  background: gameResult === 'win' ? 'rgba(57,255,20,0.15)' : 'hsl(var(--primary))',
+                  color: gameResult === 'win' ? '#39FF14' : 'hsl(var(--primary-foreground))',
+                  border: gameResult === 'win' ? '1px solid rgba(57,255,20,0.35)' : 'none',
+                }}>
+                ⚔️ Rematch
               </button>
+
               {isPremium() ? (
                 <button onClick={analyzeGame}
-                  className="w-full border border-primary/40 text-primary py-2.5 rounded-lg font-medium hover:bg-primary/10 transition-all">
-                  Analyze Game
+                  className="w-full border border-primary/40 text-primary py-3 rounded-xl font-medium text-sm hover:bg-primary/10 transition-all active:scale-95 flex items-center justify-center gap-2">
+                  Analyze Game <ChevronRight className="w-4 h-4" />
                 </button>
               ) : (
                 <button onClick={() => navigate('/upgrade')}
-                  className="w-full border border-yellow-500/40 text-yellow-400 py-2.5 rounded-lg font-medium hover:bg-yellow-500/10 transition-all flex items-center justify-center gap-2">
+                  className="w-full py-3 rounded-xl font-medium text-sm transition-all active:scale-95 flex items-center justify-center gap-2"
+                  style={{ border: '1px solid rgba(255,179,0,0.3)', color: '#FFB300', background: 'rgba(255,179,0,0.06)' }}>
                   <Lock className="w-4 h-4" /> Unlock Game Analysis
                 </button>
               )}
+
               <button onClick={() => setPhase('setup')}
-                className="w-full border border-border py-2.5 rounded-lg font-medium hover:bg-secondary transition-all">
+                className="w-full border border-border py-3 rounded-xl font-medium text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-95">
                 Return to Lobby
               </button>
             </div>
