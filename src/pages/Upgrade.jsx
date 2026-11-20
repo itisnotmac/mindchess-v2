@@ -1,22 +1,22 @@
 import { useNavigate } from 'react-router-dom';
-import { Crown, Brain, Swords, Zap, ChevronLeft, Check, Lock } from 'lucide-react';
+import { Crown, Brain, Swords, Microscope, Check } from 'lucide-react';
 import { isPremium, unlockPremium } from '@/lib/premium';
 
 const FEATURES = [
   {
     icon: Swords,
-    title: 'All 3 Premium AI Difficulties',
-    desc: 'Getting Serious, Brick Top, and Final Boss — the AI opponents that will actually challenge you.',
+    title: 'Top 3 AI Difficulties',
+    desc: 'Getting Serious, Brick Top, and Final Boss — the AI opponents that will actually push your game.',
   },
   {
     icon: Brain,
     title: 'The Chess God — AI Coach',
-    desc: 'Ask anything. Get real-time coaching, openings advice, endgame tips, and game analysis from your AI coach.',
+    desc: 'Ask anything. Openings, endgames, strategy, game history — your personal coach is always on.',
   },
   {
-    icon: Zap,
-    title: 'Live Commentary During Matches',
-    desc: 'Your AI coach narrates every move as you play — catch mistakes and patterns in the moment.',
+    icon: Microscope,
+    title: 'Game Analyzer',
+    desc: 'Deep-dive into any of your saved games. Find the blunders, the missed wins, and the patterns holding you back.',
   },
 ];
 
@@ -80,7 +80,7 @@ export default function Upgrade() {
         <div className="mt-2 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
           <p className="text-xs font-semibold text-primary mb-2">Always free — no purchase needed:</p>
           <div className="space-y-1">
-            {['Play vs AI (Yellow Belt & Tough Guy)', 'Tactics Trainer', 'Opening Explorer', 'Endgame Lab', 'Game Library'].map(f => (
+            {['Play vs AI — Yellow Belt & Tough Guy', 'Tactics Trainer', 'Opening Explorer', 'Endgame Lab', 'Game Library', 'Learning Path'].map(f => (
               <div key={f} className="flex items-center gap-2">
                 <Check className="w-3.5 h-3.5 text-primary shrink-0" />
                 <span className="text-xs text-muted-foreground">{f}</span>
