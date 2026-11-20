@@ -1,70 +1,10 @@
 import { useRoomBackground } from '@/hooks/useRoomBackground';
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Brain, Target, Gamepad2, BookOpen, Loader2 } from 'lucide-react';
-import { storage } from '@/lib/storage';
-import ProfileStats from '@/components/ProfileStats';
+import { Crown, Brain, Target, Gamepad2, BookOpen } from 'lucide-react';
 
 export default function Dashboard() {
   useRoomBackground('room-throne');
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const loadProfile = () => {
-    const p = storage.getProfile();
-    setProfile(p);
-    setLoading(false);
-  };
-
-  useEffect(() => { loadProfile(); }, []);
-
-  const [pull, setPull] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  const startY = useRef(0);
-  const pulling = useRef(false);
-  const pullRef = useRef(0);
-
-  useEffect(() => {
-    const main = document.querySelector('main');
-    if (!main) return;
-    const onTouchStart = (e) => {
-      if (main.scrollTop <= 0 && !refreshing) {
-        startY.current = e.touches[0].clientY;
-        pulling.current = true;
-      } else {
-        pulling.current = false;
-      }
-    };
-    const onTouchMove = (e) => {
-      if (!pulling.current) return;
-      const delta = e.touches[0].clientY - startY.current;
-      if (delta <= 0) { setPull(0); pullRef.current = 0; return; }
-      const v = Math.min(delta * 0.5, 80);
-      setPull(v);
-      pullRef.current = v;
-      if (main.scrollTop <= 0) e.preventDefault();
-    };
-    const onTouchEnd = () => {
-      if (!pulling.current) return;
-      pulling.current = false;
-      const triggered = pullRef.current > 60;
-      setPull(0);
-      pullRef.current = 0;
-      if (triggered && !refreshing) {
-        setRefreshing(true);
-        loadProfile();
-        setRefreshing(false);
-      }
-    };
-    main.addEventListener('touchstart', onTouchStart, { passive: true });
-    main.addEventListener('touchmove', onTouchMove, { passive: false });
-    main.addEventListener('touchend', onTouchEnd);
-    return () => {
-      main.removeEventListener('touchstart', onTouchStart);
-      main.removeEventListener('touchmove', onTouchMove);
-      main.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [refreshing]);
 
   const modules = [
     { to: '/play', icon: Gamepad2, title: 'Play vs AI', desc: '5 difficulty levels with live coaching', color: 'text-primary' },
@@ -73,25 +13,12 @@ export default function Dashboard() {
     { to: '/endgames', icon: Target, title: 'Endgame Lab', desc: 'Master critical endgame techniques', color: 'text-destructive' },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto">
-      <div className="md:hidden flex items-center justify-center overflow-hidden transition-all duration-200" style={{ height: refreshing ? 48 : pull, opacity: pull > 0 || refreshing ? 1 : 0 }}>
-        <Loader2 className={`w-6 h-6 text-primary ${refreshing ? 'animate-spin' : ''}`} style={{ transform: `rotate(${pull * 4}deg)` }} />
-      </div>
       <div className="mb-8 flex flex-col items-center text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-primary teal-text-glow flex items-center gap-3 mb-2">MIND <Crown className="w-8 h-8 text-primary teal-text-glow" /> CHESS</h1>
         <p className="text-sm text-primary teal-text-glow">From the team that brought you Reel Chess — Let's Chess!</p>
       </div>
-
-      <ProfileStats profile={profile} className="mb-8" />
 
       <h2 className="text-xl font-bold mb-4 text-primary teal-text-glow text-center">Training Modules</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
