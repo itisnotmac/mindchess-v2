@@ -20,9 +20,13 @@ export default function Tactics() {
   const [explanation, setExplanation] = useState('');
   const [failed, setFailed] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [stepIndex, setStepIndex] = useState(0);
 
   const game = useMemo(() => createGame(fen), [fen]);
+  // orientation is fixed to whoever moves first in the puzzle
   const orientation = puzzle ? (getTurn(createGame(puzzle.fen)) === 'w' ? 'white' : 'black') : 'white';
+  // movableColor tracks the current turn so the board stays interactive correctly
+  const movableColor = status === 'solving' ? (game ? getTurn(game) : orientation) : null;
 
   useEffect(() => {
     setProfile(storage.getProfile());
@@ -37,22 +41,55 @@ export default function Tactics() {
     setStatus('solving');
     setExplanation('');
     setFailed(false);
+    setStepIndex(0);
   }, []);
 
-  const handleMove = (from, to, promotion) => {
+  // Plays an opponent response move automatically after a short delay
+  const playOpponentResponse = useCallback((currentFen, responseMove, nextStepIndex) => {
+    setTimeout(() => {
+      const from = responseMove.slice(0, 2);
+      const to = responseMove.slice(2, 4);
+      const promotion = responseMove.length > 4 ? responseMove[4] : undefined;
+      const g = createGame(currentFen);
+      makeMove(g, from, to, promotion);
+      const newFen = g.fen();
+      setFen(newFen);
+      setLastMove({ from, to });
+      setStepIndex(nextStepIndex);
+    }, 500);
+  }, []);
+
+  const handleMove = useCallback((from, to, promotion) => {
     if (status !== 'solving') return false;
-    const userMove = from + to;
-    if (puzzle.solution_moves.includes(userMove)) {
+    const userMove = from + to + (promotion || '');
+    // Also try without promotion suffix for non-promotion moves
+    const userMoveBase = from + to;
+    const expectedMove = puzzle.solution_moves[stepIndex];
+
+    if (expectedMove === userMove || expectedMove === userMoveBase) {
       const g = createGame(fen);
       makeMove(g, from, to, promotion);
-      setFen(g.fen());
+      const newFen = g.fen();
+      setFen(newFen);
       setLastMove({ from, to });
       playSound('correct');
-      setStatus('correct');
-      setSolved(s => s + 1);
-      setStreak(s => s + 1);
-      setExplanation(puzzle.explanation);
-      {
+
+      const nextStep = stepIndex + 1;
+
+      // Check if there's an opponent response move next
+      if (nextStep < puzzle.solution_moves.length) {
+        // Odd index = opponent's forced response — play it automatically
+        const opponentMove = puzzle.solution_moves[nextStep];
+        const stepAfterOpponent = nextStep + 1;
+        playOpponentResponse(newFen, opponentMove, stepAfterOpponent);
+        // Stay in 'solving' so the player can make their next move
+      } else {
+        // No more moves — puzzle complete
+        playSound('correct');
+        setStatus('correct');
+        setSolved(s => s + 1);
+        setStreak(s => s + 1);
+        setExplanation(puzzle.explanation);
         const updated = {
           ...profile,
           xp: (profile.xp || 0) + XP.PUZZLE_SOLVED,
@@ -68,7 +105,7 @@ export default function Tactics() {
       setStreak(0);
       return false;
     }
-  };
+  }, [status, puzzle, stepIndex, fen, profile, playOpponentResponse]);
 
   if (!puzzle) {
     return (
@@ -102,7 +139,7 @@ export default function Tactics() {
           </div>
           <div className="w-full flex justify-center">
             <ChessBoard game={game} fen={fen} onMove={handleMove} orientation={orientation}
-              interactive={status === 'solving'} lastMove={lastMove} movableColor={getTurn(createGame(puzzle.fen))} />
+              interactive={status === 'solving'} lastMove={lastMove} movableColor={movableColor} />
           </div>
         </div>
 
