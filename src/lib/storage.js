@@ -8,6 +8,18 @@ const KEYS = {
   unlocked: 'mc_unlocked',
 };
 
+// All localStorage keys the app touches — used by deleteAllData()
+export const ALL_APP_KEYS = [
+  'mc_profile',
+  'mc_unlocked',
+  'mc_tts',
+  'mc_voice',
+  'mc_sound',
+  'mc_theme',
+  'mc_colorblind',
+  'vault_unlocked',
+];
+
 export const DEFAULT_PROFILE = {
   xp: 0,
   puzzlesSolved: 0,
@@ -50,6 +62,18 @@ export const storage = {
 
   clear() {
     Object.values(KEYS).forEach((k) => {
+      try { localStorage.removeItem(k); } catch { /* ignore */ }
+    });
+  },
+
+  /**
+   * Wipes every piece of app data from this device.
+   * Called from the account deletion / data deletion flow.
+   * When Firebase is added, this is also where the server-side
+   * delete call will go (delete Firestore doc + Auth account).
+   */
+  deleteAllData() {
+    ALL_APP_KEYS.forEach((k) => {
       try { localStorage.removeItem(k); } catch { /* ignore */ }
     });
   },

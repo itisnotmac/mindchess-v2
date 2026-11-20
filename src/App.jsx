@@ -17,6 +17,7 @@ import Contact from '@/pages/Contact';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsAndConditions from '@/pages/TermsAndConditions';
 import Settings from '@/pages/Settings';
+import PlayConsoleRef from '@/pages/PlayConsoleRef';
 import GameLibrary from '@/pages/GameLibrary';
 import GameDetail from '@/pages/GameDetail';
 import AnalyzeGame from '@/pages/AnalyzeGame';
@@ -49,6 +50,8 @@ function App() {
             <Route path="/upgrade" element={<Upgrade />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
+          {/* Dev-only reference page — not linked in any user-facing nav */}
+          <Route path="/dev/play-console-ref" element={<PlayConsoleRef />} />
         </Routes>
       </Router>
       <Toaster />
