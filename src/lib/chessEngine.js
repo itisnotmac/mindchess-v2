@@ -211,30 +211,48 @@ function minimax(game, depth, alpha, beta, isMaximizing) {
   }
 }
 
-const DEPTH_MAP = { beginner: 0, easy: 1, intermediate: 2, advanced: 3, master: 4 };
+// depth: how many plies the engine searches
+// noise: random centipawn noise added to scores — higher = more "human" mistakes
+const DIFFICULTY_CONFIG = {
+  beginner:     { depth: 0, noise: 0    },  // pure random (handled separately)
+  easy:         { depth: 1, noise: 300  },  // 1-ply + heavy noise → occasional blunders
+  intermediate: { depth: 2, noise: 150  },  // 2-ply + moderate noise → solid but imperfect
+  advanced:     { depth: 3, noise: 50   },  // 3-ply + light noise → strong, rare slip-ups
+  master:       { depth: 4, noise: 0    },  // 4-ply, no noise → plays best move
+};
 
 export function getAIMove(game, difficulty) {
   const moves = game.moves({ verbose: true });
   if (moves.length === 0) return null;
 
+  // Beginner: fully random, mild capture preference
   if (difficulty === 'beginner') {
     const captures = moves.filter(m => m.flags.includes('c') || m.flags.includes('e'));
-    if (captures.length > 0 && Math.random() > 0.4) {
+    if (captures.length > 0 && Math.random() > 0.6) {
       return captures[Math.floor(Math.random() * captures.length)];
     }
     return moves[Math.floor(Math.random() * moves.length)];
   }
 
-  const depth = DEPTH_MAP[difficulty] || 2;
+  const { depth, noise } = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.intermediate;
   const isMaximizing = game.turn() === 'w';
   let bestMove = null;
   let bestScore = isMaximizing ? -Infinity : Infinity;
+
+  // Shuffle to break ties randomly (avoids always picking first legal move)
   const shuffled = [...moves].sort(() => Math.random() - 0.5);
 
   for (const move of shuffled) {
     game.move(move);
-    const score = minimax(game, depth - 1, -Infinity, Infinity, !isMaximizing);
+    let score = minimax(game, depth - 1, -Infinity, Infinity, !isMaximizing);
     game.undo();
+
+    // Add random noise to simulate imperfect play at lower difficulties.
+    // Noise is symmetric so the AI can both over- and under-estimate a move.
+    if (noise > 0) {
+      score += (Math.random() * 2 - 1) * noise;
+    }
+
     if (isMaximizing) {
       if (score > bestScore) { bestScore = score; bestMove = move; }
     } else {
