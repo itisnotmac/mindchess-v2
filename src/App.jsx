@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SettingsProvider } from '@/lib/SettingsContext';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { Capacitor } from '@capacitor/core';
@@ -46,23 +46,41 @@ function RequireAuth({ children }) {
 }
 
 // Intercepts the Android hardware back button.
-// Goes back in router history if possible; minimizes the app at the root.
+// At the home screen: first press shows a "press again to exit" toast;
+// second press within 2 seconds minimizes the app.
+// Anywhere else: navigates back in router history.
 function AndroidBackButton() {
   const navigate = useNavigate();
   const location = useLocation();
+  const exitPending = useRef(false);
+  const exitTimer = useRef(null);
+  const [exitToast, setExitToast] = useState(false);
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    let App;
+    let CapApp;
     let listener;
 
-    import('@capacitor/app').then(({ App: CapApp }) => {
-      App = CapApp;
+    import('@capacitor/app').then(({ App }) => {
+      CapApp = App;
       App.addListener('backButton', ({ canGoBack }) => {
-        // At the home route, minimize instead of exiting
         if (location.pathname === '/') {
-          App.minimizeApp();
+          if (exitPending.current) {
+            // Second press — exit
+            clearTimeout(exitTimer.current);
+            exitPending.current = false;
+            setExitToast(false);
+            App.minimizeApp();
+          } else {
+            // First press — show hint
+            exitPending.current = true;
+            setExitToast(true);
+            exitTimer.current = setTimeout(() => {
+              exitPending.current = false;
+              setExitToast(false);
+            }, 2000);
+          }
         } else if (canGoBack) {
           navigate(-1);
         } else {
@@ -71,10 +89,20 @@ function AndroidBackButton() {
       }).then(handle => { listener = handle; });
     });
 
-    return () => { listener?.remove(); };
+    return () => {
+      listener?.remove();
+      clearTimeout(exitTimer.current);
+    };
   }, [location.pathname, navigate]);
 
-  return null;
+  if (!exitToast) return null;
+  return (
+    <div className="fixed bottom-32 left-0 right-0 flex justify-center z-50 pointer-events-none">
+      <div className="bg-black/80 text-white text-sm px-5 py-2.5 rounded-full">
+        Press back again to exit
+      </div>
+    </div>
+  );
 }
 
 function AppRoutes() {
