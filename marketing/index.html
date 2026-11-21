@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mindChess — Master the Game</title>
+  <meta name="description" content="Chess mastery app with AI coach, tactics puzzles, openings explorer, and progressive difficulty. Available on Android." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e8e8f0;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(10,10,15,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 700;
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 24px; font-size: 14px; color: #888; }
+    .nav-links a:hover { color: #e8e8f0; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.12) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(200,168,75,0.15);
+      border: 1px solid rgba(200,168,75,0.3);
+      color: #c8a84b;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 16px; border-radius: 999px;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 8vw, 72px);
+      font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #c8c8d8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #888; max-width: 540px; margin: 0 auto 40px;
+    }
+    .cta-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      color: #0a0a0f; font-weight: 700; font-size: 16px;
+      padding: 14px 28px; border-radius: 12px;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary {
+      display: inline-flex; align-items: center;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #888; font-size: 15px;
+      padding: 14px 24px; border-radius: 12px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: #e8e8f0; }
+
+    /* FEATURES */
+    .section { padding: 80px 24px; max-width: 1000px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #c8a84b; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 44px); font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 48px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(200,168,75,0.25); }
+    .feature-icon { font-size: 32px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: #777; line-height: 1.6; }
+
+    /* VAULT */
+    .vault-section {
+      padding: 80px 24px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 50%, rgba(200,168,75,0.08) 0%, transparent 70%);
+    }
+    .vault-card {
+      max-width: 500px; margin: 0 auto;
+      background: rgba(200,168,75,0.06);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 24px; padding: 48px 40px;
+    }
+    .vault-price {
+      font-size: 56px; font-weight: 800;
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin: 12px 0 4px;
+    }
+    .vault-price-note { font-size: 14px; color: #666; margin-bottom: 32px; }
+    .vault-features { list-style: none; text-align: left; margin-bottom: 36px; }
+    .vault-features li {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 15px;
+    }
+    .vault-features li:last-child { border-bottom: none; }
+    .check { color: #c8a84b; font-size: 18px; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 40px 24px;
+      text-align: center;
+      color: #444; font-size: 13px;
+    }
+    footer .footer-links {
+      display: flex; gap: 24px; justify-content: center;
+      margin-bottom: 16px;
+    }
+    footer a { color: #555; }
+    footer a:hover { color: #888; }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .vault-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">♟ mindChess</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#vault">Master's Vault</a>
+      <a href="/privacy-policy">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Now on Android</div>
+    <h1>Master the Game.<br><span>Mind and Board.</span></h1>
+    <p>Chess mastery app with AI coaching, tactics training, opening study, and difficulty levels that actually challenge you.</p>
+    <div class="cta-group">
+      <a href="https://play.google.com/store/apps/details?id=io.mindchess.app" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.76c.37.21.8.22 1.19.04L14.84 12 4.37.2C3.98.02 3.55.03 3.18.24 2.44.65 2 1.42 2 2.28v19.44c0 .86.44 1.63 1.18 2.04zM16.44 13.6l2.6 2.6-9.4 5.27 6.8-7.87zM21.3 10.5c.46.26.7.73.7 1.5s-.24 1.24-.7 1.5l-2.3 1.29L16.2 12l2.8-2.79 2.3 1.29zM9.64 2.53l9.4 5.27-2.6 2.6-6.8-7.87z"/>
+        </svg>
+        Get it on Google Play
+      </a>
+      <a href="#features" class="btn-secondary">See features ↓</a>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="section-label">What's inside</div>
+    <div class="section-title">Everything you need to level up.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚔️</div>
+        <h3>Play vs AI</h3>
+        <p>5 difficulty levels from Yellow Belt to Final Boss. Start easy, grind your way up. The top levels will humble even experienced players.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧩</div>
+        <h3>Tactics Puzzles</h3>
+        <p>Sharpen your pattern recognition with daily puzzles. Every solve earns XP toward your next rank.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h3>Opening Explorer</h3>
+        <p>Study the lines that define the game. Know your Sicilian from your Caro-Kann before you sit down at the board.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>Learning Path</h3>
+        <p>Structured lessons that build your game from the ground up. Perfect for beginners who want a clear road map.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Game Analyzer</h3>
+        <p>Upload your games, find your mistakes, and understand exactly why you lost — so it doesn't happen again.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Chess Coach</h3>
+        <p>Ask anything about chess and get instant, intelligent answers from your personal mentor. Available anytime, anywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- XP / PROGRESSION -->
+  <section class="section">
+    <div class="section-label">Your journey</div>
+    <div class="section-title">Rise through the ranks.</div>
+    <p style="color: #777; max-width: 560px; font-size: 16px;">Every game you play, every puzzle you solve, every lesson you complete earns XP. Rise from Pawn all the way to Mind Chess Master. No shortcuts — just chess.</p>
+  </section>
+
+  <!-- VAULT -->
+  <section class="vault-section" id="vault">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <div class="section-label" style="text-align:center;">Master's Vault</div>
+      <div class="section-title" style="margin-bottom: 40px;">One price. Everything. Forever.</div>
+      <div class="vault-card">
+        <div style="font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">One-time purchase</div>
+        <div class="vault-price">$4.99</div>
+        <div class="vault-price-note">Pay once. No subscription. Yours for life.</div>
+        <ul class="vault-features">
+          <li><span class="check">♛</span> AI difficulty levels 3–5 (Getting Serious, Brick Top, Final Boss)</li>
+          <li><span class="check">♛</span> AI Chess Coach — unlimited questions</li>
+          <li><span class="check">♛</span> Game Analyzer — unlimited games</li>
+          <li><span class="check">♛</span> All future premium features</li>
+        </ul>
+        <a href="https://play.google.com/store/apps/details?id=io.mindchess.app" class="btn-primary" style="width: 100%; justify-content: center; font-size: 15px;">
+          Download on Google Play
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+    </div>
+    <div>© 2026 mindChess. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>
