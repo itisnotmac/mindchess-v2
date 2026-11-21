@@ -1,9 +1,11 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { SettingsProvider } from '@/lib/SettingsContext';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { Capacitor } from '@capacitor/core';
 import PageNotFound from './lib/PageNotFound';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from '@/components/Layout';
@@ -41,6 +43,38 @@ function RequireAuth({ children }) {
   if (user === undefined) return <AppLoader />;
   if (user === null) return <Navigate to="/welcome" replace />;
   return children;
+}
+
+// Intercepts the Android hardware back button.
+// Goes back in router history if possible; minimizes the app at the root.
+function AndroidBackButton() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    let App;
+    let listener;
+
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      App = CapApp;
+      App.addListener('backButton', ({ canGoBack }) => {
+        // At the home route, minimize instead of exiting
+        if (location.pathname === '/') {
+          App.minimizeApp();
+        } else if (canGoBack) {
+          navigate(-1);
+        } else {
+          App.minimizeApp();
+        }
+      }).then(handle => { listener = handle; });
+    });
+
+    return () => { listener?.remove(); };
+  }, [location.pathname, navigate]);
+
+  return null;
 }
 
 function AppRoutes() {
@@ -88,6 +122,7 @@ function App() {
         <AuthProvider>
           <Router>
             <ScrollToTop />
+            <AndroidBackButton />
             <AppRoutes />
             <Toaster />
           </Router>
