@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Target, User, Crown, MessageSquare, Settings, Library, Microscope, GraduationCap, ChevronLeft, Menu as MenuIcon } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Target, User, Crown, MessageSquare, Settings, Library, Microscope, GraduationCap, ChevronLeft, Menu as MenuIcon, Vault } from 'lucide-react';
 import AIChatPanel from '@/components/AIChatPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SettingsProvider } from '@/lib/SettingsContext';
@@ -13,6 +13,7 @@ const CORE_TABS = [
 ];
 
 const SECONDARY = [
+  { to: '/upgrade', label: "Master's Vault", icon: Vault, gold: true },
   { to: '/library', label: 'Library', icon: Library },
   { to: '/analyze', label: 'Analyze', icon: Microscope },
   { to: '/about', label: 'About', icon: Crown },
@@ -25,7 +26,7 @@ const SIDEBAR_ITEMS = [...CORE_TABS, ...SECONDARY];
 function getRouteMeta(path) {
   if (path === '/') return { title: 'Mind Chess', back: false };
   if (path.startsWith('/library/')) return { title: 'Game', back: true };
-  if (path.startsWith('/upgrade')) return { title: "Master's Vault", back: true };
+  if (path.startsWith('/upgrade')) return { title: "Master's Vault", back: false };
   if (path.startsWith('/learn')) return { title: 'Learn', back: false };
   if (path.startsWith('/play')) return { title: 'Play', back: false };
   if (path.startsWith('/tactics')) return { title: 'Tactics', back: false };
@@ -129,6 +130,16 @@ export default function Layout() {
         <nav className="flex-1 px-3 space-y-1">
           {SIDEBAR_ITEMS.map(item => {
             const active = location.pathname === item.to;
+            if (item.gold) {
+              return (
+                <Link key={item.to} to={item.to}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
+                    ${active ? 'bg-yellow-500/20 text-yellow-300' : 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20'}`}>
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-bold">{item.label}</span>
+                </Link>
+              );
+            }
             return (
               <Link key={item.to} to={item.to}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
@@ -190,6 +201,15 @@ export default function Layout() {
           <nav className="flex flex-col gap-1 mt-4">
             {SECONDARY.map(item => {
               const active = path.startsWith(item.to);
+              if (item.gold) {
+                return (
+                  <Link key={item.to} to={item.to} onClick={(e) => { setMenuOpen(false); handleTabClick(item.to)(e); }}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-lg min-h-[44px] ${active ? 'bg-yellow-500/20 text-yellow-300' : 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20'}`}>
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-bold">{item.label}</span>
+                  </Link>
+                );
+              }
               return (
                 <Link key={item.to} to={item.to} onClick={(e) => { setMenuOpen(false); handleTabClick(item.to)(e); }}
                   className={`flex items-center gap-3 px-3 py-3 rounded-lg min-h-[44px] ${active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}>

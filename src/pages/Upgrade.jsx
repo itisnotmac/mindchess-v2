@@ -35,7 +35,7 @@ export default function Upgrade() {
       const success = await purchasePremium();
       if (success) {
         setAlready(true);
-        navigate(-1);
+        navigate('/');
       }
     } catch {
       setError('Purchase failed. Please try again.');
@@ -51,7 +51,7 @@ export default function Upgrade() {
       const restored = await restorePurchases();
       if (restored) {
         setAlready(true);
-        navigate(-1);
+        navigate('/');
       } else {
         setError('No previous purchase found for this account.');
       }
@@ -154,7 +154,7 @@ export default function Upgrade() {
         )}
 
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           className="w-full py-3 rounded-2xl text-muted-foreground text-sm font-medium hover:text-foreground transition-colors"
         >
           Maybe later
