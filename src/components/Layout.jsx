@@ -63,7 +63,6 @@ export default function Layout() {
   const path = location.pathname;
   const meta = getRouteMeta(path);
   const [chatOpen, setChatOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tabMemory, setTabMemory] = useState({});
 
@@ -112,7 +111,7 @@ export default function Layout() {
           <button onClick={() => setChatOpen(true)} className="w-11 h-11 flex items-center justify-center text-primary rounded-lg hover:bg-primary/10 teal-glow-sm" aria-label="Ask Coach">
             <MessageSquare className="w-5 h-5" />
           </button>
-          <button onClick={() => setSettingsOpen(true)} className="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground rounded-lg hover:bg-secondary" aria-label="Settings">
+          <button onClick={() => navigate('/settings')} className="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground rounded-lg hover:bg-secondary" aria-label="Settings">
             <Settings className="w-5 h-5" />
           </button>
         </div>
@@ -146,7 +145,7 @@ export default function Layout() {
             <MessageSquare className="w-5 h-5" />
             <span>Ask Coach</span>
           </button>
-          <button onClick={() => setSettingsOpen(true)}
+          <button onClick={() => navigate('/settings')}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-all mt-2">
             <Settings className="w-4 h-4" />
             <span className="text-sm">Settings</span>
