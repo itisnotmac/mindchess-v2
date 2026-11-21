@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Crown, Brain, Swords, Microscope, Check } from 'lucide-react';
-import { isPremium, unlockPremium } from '@/lib/premium';
+import { Crown, Brain, Swords, Microscope, Check, RotateCcw } from 'lucide-react';
+import { isPremium, purchasePremium, restorePurchases } from '@/lib/premium';
 
 const FEATURES = [
   {
@@ -24,14 +24,43 @@ const FEATURES = [
 export default function Upgrade() {
   const navigate = useNavigate();
   const [already, setAlready] = useState(isPremium());
+  const [loading, setLoading] = useState(false);
+  const [restoring, setRestoring] = useState(false);
+  const [error, setError] = useState('');
 
-  const handlePurchase = () => {
-    // TODO: wire RevenueCat purchase flow here
-    // For now: unlock directly (dev / placeholder)
-    unlockPremium();
-    setAlready(true);
-    navigate(-1);
-  };
+  async function handlePurchase() {
+    setError('');
+    setLoading(true);
+    try {
+      const success = await purchasePremium();
+      if (success) {
+        setAlready(true);
+        navigate(-1);
+      }
+    } catch {
+      setError('Purchase failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRestore() {
+    setError('');
+    setRestoring(true);
+    try {
+      const restored = await restorePurchases();
+      if (restored) {
+        setAlready(true);
+        navigate(-1);
+      } else {
+        setError('No previous purchase found for this account.');
+      }
+    } catch {
+      setError('Restore failed. Please try again.');
+    } finally {
+      setRestoring(false);
+    }
+  }
 
   return (
     <div className="min-h-full flex flex-col">
@@ -42,9 +71,7 @@ export default function Upgrade() {
           <div className="w-64 h-64 rounded-full bg-yellow-500/10 blur-3xl mt-4" />
         </div>
 
-        <div
-          className="relative flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/15 border border-yellow-500/40 mb-4"
-        >
+        <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/15 border border-yellow-500/40 mb-4">
           <Crown className="w-10 h-10 text-yellow-400" />
         </div>
 
@@ -104,9 +131,25 @@ export default function Upgrade() {
         ) : (
           <button
             onClick={handlePurchase}
-            className="w-full py-4 rounded-2xl bg-yellow-500 hover:bg-yellow-400 active:scale-95 text-black font-black text-base tracking-wide transition-all"
+            disabled={loading || restoring}
+            className="w-full py-4 rounded-2xl bg-yellow-500 hover:bg-yellow-400 active:scale-95 text-black font-black text-base tracking-wide transition-all disabled:opacity-60"
           >
-            Unlock Master's Vault — $4.99
+            {loading ? 'Opening Store…' : 'Unlock Master\'s Vault — $4.99'}
+          </button>
+        )}
+
+        {error && (
+          <p className="text-center text-xs text-red-400">{error}</p>
+        )}
+
+        {!already && (
+          <button
+            onClick={handleRestore}
+            disabled={loading || restoring}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-muted-foreground text-sm font-medium hover:text-foreground transition-colors disabled:opacity-50"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            {restoring ? 'Restoring…' : 'Restore Purchase'}
           </button>
         )}
 

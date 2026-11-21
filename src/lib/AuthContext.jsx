@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { Filter } from 'bad-words';
+import { configureRevenueCat } from './premium';
 
 const filter = new Filter();
 
@@ -56,6 +57,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ?? null);
+      if (firebaseUser) configureRevenueCat(firebaseUser.uid);
     });
     return unsubscribe;
   }, []);
