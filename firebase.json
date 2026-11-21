@@ -10,6 +10,7 @@
     }
   ],
   "hosting": {
+    "site": "mindchess1126",
     "public": "marketing",
     "ignore": [
       "firebase.json",
