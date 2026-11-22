@@ -29,6 +29,10 @@
       {
         "source": "/delete-account",
         "destination": "/delete-account.html"
+      },
+      {
+        "source": "/delete-data",
+        "destination": "/delete-data.html"
       }
     ],
     "cleanUrls": true
