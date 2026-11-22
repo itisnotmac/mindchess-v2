@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Your Account — mindChess</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e8e8f0;
+      line-height: 1.8;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(10,10,15,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 100; backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 700;
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .content {
+      max-width: 680px; margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+    h1 { font-size: 36px; font-weight: 800; margin-bottom: 16px; }
+    .subtitle { color: #777; font-size: 16px; margin-bottom: 48px; }
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+    .steps { list-style: none; }
+    .steps li {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 15px; color: #bbb;
+    }
+    .steps li:last-child { border-bottom: none; }
+    .step-num {
+      background: rgba(200,168,75,0.15);
+      color: #c8a84b;
+      font-size: 13px; font-weight: 700;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .warning {
+      background: rgba(255,80,80,0.08);
+      border: 1px solid rgba(255,80,80,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #ff9999; font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .warning strong { color: #ffbbbb; }
+    .contact-card {
+      background: rgba(200,168,75,0.06);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 16px;
+      padding: 28px 32px;
+    }
+    .contact-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .contact-card p { color: #777; font-size: 14px; margin-bottom: 16px; }
+    .contact-card a {
+      display: inline-block;
+      background: linear-gradient(135deg, #c8a84b, #f0d060);
+      color: #0a0a0f; font-weight: 700; font-size: 14px;
+      padding: 10px 22px; border-radius: 8px;
+      text-decoration: none;
+    }
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 32px 24px; text-align: center;
+      color: #444; font-size: 13px; margin-top: 48px;
+    }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { color: #888; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="/">♟ mindChess</a>
+  </nav>
+
+  <div class="content">
+    <h1>Delete Your Account</h1>
+    <p class="subtitle">You can delete your mindChess account and all associated data directly from within the app.</p>
+
+    <div class="warning">
+      <strong>⚠️ This action is permanent.</strong> Deleting your account will erase your game history, XP progress, and purchase records. This cannot be undone.
+    </div>
+
+    <div class="card">
+      <h2>How to delete your account in the app</h2>
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <span>Open the <strong>mindChess</strong> app on your Android device</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span>Tap the <strong>menu icon</strong> (☰) in the top corner to open the navigation menu</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span>Tap <strong>Settings</strong></span>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <span>Scroll down and tap <strong>Delete Account</strong></span>
+        </li>
+        <li>
+          <span class="step-num">5</span>
+          <span>Enter your password to confirm, then tap <strong>Delete My Account</strong></span>
+        </li>
+      </ol>
+    </div>
+
+    <p style="color: #555; font-size: 14px; margin-bottom: 32px;">Your account and all associated data — including your profile, game history, and purchase records — will be permanently deleted within 30 days of your request.</p>
+
+    <div class="contact-card">
+      <h2>Can't access the app?</h2>
+      <p>If you no longer have access to the app and need your account deleted, email us and we'll handle it manually within 30 days.</p>
+      <a href="mailto:support@mindchess.study">Email support@mindchess.study</a>
+    </div>
+  </div>
+
+  <footer>
+    <div style="display:flex; gap:24px; justify-content:center; margin-bottom:12px;">
+      <a href="/">Home</a>
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+    </div>
+    © 2026 mindChess. All rights reserved.
+  </footer>
+
+</body>
+</html>
