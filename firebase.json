@@ -10,7 +10,7 @@
     }
   ],
   "hosting": {
-    "site": "mindchess1126",
+    "site": "mindchess-web-app",
     "public": "marketing",
     "ignore": [
       "firebase.json",
