@@ -51,7 +51,7 @@ export default function AIChatPanel({ open, onClose }) {
     return (
       <div className="fixed inset-0 z-50 flex justify-end">
         <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-        <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col h-full">
+        <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col" style={{ height: '100dvh' }}>
           <div className="flex items-center justify-between p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
@@ -90,7 +90,7 @@ export default function AIChatPanel({ open, onClose }) {
 return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col h-full">
+      <div className="relative w-full max-w-md bg-card border-l border-primary/20 flex flex-col" style={{ height: '100dvh' }}>
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center teal-glow-sm">
@@ -131,7 +131,7 @@ return (
           )}
         </div>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
           <div className="flex gap-2">
             <input
               value={input}
