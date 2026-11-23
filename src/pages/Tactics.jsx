@@ -88,12 +88,16 @@ export default function Tactics() {
         playSound('correct');
         setStatus('correct');
         setSolved(s => s + 1);
-        setStreak(s => s + 1);
+        const newStreak = streak + 1;
+        setStreak(newStreak);
         setExplanation(puzzle.explanation);
         const updated = {
           ...profile,
           xp: (profile.xp || 0) + XP.PUZZLE_SOLVED,
           puzzlesSolved: (profile.puzzlesSolved || 0) + 1,
+          puzzles_solved: (profile.puzzles_solved || 0) + 1,
+          puzzle_streak: newStreak,
+          longest_streak: Math.max(profile.longest_streak || 0, newStreak),
         };
         storage.saveProfile(updated);
         setProfile(updated);
@@ -103,6 +107,9 @@ export default function Tactics() {
       playSound('wrong');
       setFailed(true);
       setStreak(0);
+      const updated = { ...profile, puzzle_streak: 0 };
+      storage.saveProfile(updated);
+      setProfile(updated);
       return false;
     }
   }, [status, puzzle, stepIndex, fen, profile, playOpponentResponse]);

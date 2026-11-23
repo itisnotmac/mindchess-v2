@@ -104,8 +104,16 @@ export default function PlayVsAI() {
   const handleGameOver = (g, result) => {
     setGameResult(result);
     setPhase('gameover');
-    // Game results are not persisted in the offline app — no ELO, no session history
     setEloChange(0);
+    // Persist game stats
+    const p = storage.getProfile();
+    const updatedProfile = {
+      ...p,
+      total_games: (p.total_games || 0) + 1,
+      games_won: (p.games_won || 0) + (result === 'win' ? 1 : 0),
+    };
+    storage.saveProfile(updatedProfile);
+    setProfile(updatedProfile);
   };
 
   const handleMove = (from, to, promotion) => {
