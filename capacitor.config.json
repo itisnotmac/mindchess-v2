@@ -27,7 +27,8 @@
     "overrideUserAgent": "",
     "appendUserAgent": "",
     "backgroundColor": "#000000",
-    "allowNavigation": []
+    "allowNavigation": [],
+    "adjustResize": true
   },
   "server": {
     "androidScheme": "https"
