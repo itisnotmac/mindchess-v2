@@ -1,5 +1,5 @@
 import { useRoomBackground } from '@/hooks/useRoomBackground';
-import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { getCommentary } from '@/lib/commentary';
 import ChessBoard from '@/components/chess/ChessBoard';
 import { createGame, makeMove, getFen, getTurn, isCheckmate, isDraw, isStalemate, isCheck, isGameOver, getAIMoveAsync } from '@/lib/chessEngine';
@@ -39,7 +39,6 @@ export default function PlayVsAI() {
   const [eloChange, setEloChange] = useState(0);
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
-  const commentaryRef = useRef(null);
 
   const game = useMemo(() => createGame(fen), [fen]);
   const orientation = playerColor;
@@ -49,11 +48,6 @@ export default function PlayVsAI() {
     setProfile(storage.getProfile());
   }, []);
 
-  useEffect(() => {
-    if (commentaryRef.current) {
-      commentaryRef.current.scrollTop = commentaryRef.current.scrollHeight;
-    }
-  }, [commentary]);
 
   const fetchCommentary = useCallback((currentFen, moveList, lastMoveSan) => {
     const text = getCommentary(lastMoveSan, moveList.length);
@@ -228,26 +222,26 @@ export default function PlayVsAI() {
 
         <div className="space-y-4">
           <div className="bg-card border border-border rounded-xl p-4 teal-border-glow">
-            <h3 className="font-bold mb-2 text-sm text-muted-foreground uppercase tracking-wide">Move History</h3>
-            <div className="space-y-0.5 max-h-48 overflow-y-auto scrollbar-thin text-sm font-mono">
-              {moves.length === 0 ? <p className="text-muted-foreground text-xs">No moves yet</p> : 
-                moves.map((m, i) => (
-                  <div key={i} className="flex gap-2">
-                    <span className="text-muted-foreground w-6">{Math.floor(i / 2) + 1}.{i % 2 === 0 ? '' : '..'}</span>
-                    <span>{m}</span>
-                  </div>
+            <h3 className="font-bold mb-2 text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+              <Bot className="w-4 h-4 text-primary" /> Coach Commentary
+            </h3>
+            <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
+              {commentary.length === 0 ? <p className="text-muted-foreground text-xs">Live commentary appears here as you play...</p> :
+                [...commentary].reverse().map((c, i) => (
+                  <p key={i} className="text-xs text-foreground/90 bg-secondary/50 rounded p-2">{c.text}</p>
                 ))}
             </div>
           </div>
 
           <div className="bg-card border border-border rounded-xl p-4 teal-border-glow">
-            <h3 className="font-bold mb-2 text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-              <Bot className="w-4 h-4 text-primary" /> Coach Commentary
-            </h3>
-            <div ref={commentaryRef} className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
-              {commentary.length === 0 ? <p className="text-muted-foreground text-xs">Live commentary appears here as you play...</p> :
-                commentary.map((c, i) => (
-                  <p key={i} className="text-xs text-foreground/90 bg-secondary/50 rounded p-2">{c.text}</p>
+            <h3 className="font-bold mb-2 text-sm text-muted-foreground uppercase tracking-wide">Move History</h3>
+            <div className="space-y-0.5 max-h-48 overflow-y-auto scrollbar-thin text-sm font-mono">
+              {moves.length === 0 ? <p className="text-muted-foreground text-xs">No moves yet</p> :
+                moves.map((m, i) => (
+                  <div key={i} className="flex gap-2">
+                    <span className="text-muted-foreground w-6">{Math.floor(i / 2) + 1}.{i % 2 === 0 ? '' : '..'}</span>
+                    <span>{m}</span>
+                  </div>
                 ))}
             </div>
           </div>
