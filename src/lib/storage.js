@@ -45,7 +45,13 @@ export const storage = {
   },
 
   getProfile() {
-    return this.get('profile') ?? { ...DEFAULT_PROFILE };
+    const profile = this.get('profile') ?? { ...DEFAULT_PROFILE };
+    // One-time migration: copy camelCase puzzlesSolved → snake_case puzzles_solved
+    if (profile.puzzlesSolved && !profile.puzzles_solved) {
+      profile.puzzles_solved = profile.puzzlesSolved;
+      this.set('profile', profile);
+    }
+    return profile;
   },
 
   saveProfile(profile) {

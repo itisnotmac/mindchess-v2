@@ -2,7 +2,7 @@ import { useRoomBackground } from '@/hooks/useRoomBackground';
 import React, { useState, useEffect } from 'react';
 import { storage } from '@/lib/storage';
 import { getLevelForXP } from '@/lib/progression';
-import { Crown, Star, Brain, BookOpen } from 'lucide-react';
+import { Crown, Star, BookOpen } from 'lucide-react';
 import ProfileStats from '@/components/ProfileStats';
 
 export default function Profile() {
@@ -18,7 +18,6 @@ export default function Profile() {
   }
 
   const xp = profile.xp || 0;
-  const puzzlesSolved = profile.puzzlesSolved || 0;
   const lessonsCompleted = (profile.lessonsCompleted || []).length;
 
   const { level, title: levelLabel, xpIntoLevel, xpNeeded, progress, isMax } = getLevelForXP(xp);
@@ -63,11 +62,6 @@ export default function Profile() {
         <div className="bg-card border border-border rounded-xl p-4 teal-border-glow text-center">
           <div className="text-3xl font-bold text-[#FFB300]">{xp}</div>
           <div className="text-xs text-muted-foreground mt-1">Total XP</div>
-        </div>
-        <div className="bg-card border border-border rounded-xl p-4 teal-border-glow text-center">
-          <Brain className="w-6 h-6 text-[#39FF14] mx-auto mb-1" />
-          <div className="text-3xl font-bold text-[#39FF14]">{puzzlesSolved}</div>
-          <div className="text-xs text-muted-foreground mt-1">Puzzles Solved</div>
         </div>
         <div className="bg-card border border-border rounded-xl p-4 teal-border-glow text-center">
           <BookOpen className="w-6 h-6 text-[#FFB300] mx-auto mb-1" />
