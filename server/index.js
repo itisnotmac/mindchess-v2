@@ -40,11 +40,12 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
   .filter(Boolean)
   .concat([
     'capacitor://localhost',
-    'http://localhost',
-    'http://localhost:5173',  // Vite dev server
-    'http://localhost:3000',
-    'http://localhost:4173',  // Vite preview
-  ]);
+'http://localhost',
+'https://localhost',      // Capacitor Android with androidScheme: https
+'http://localhost:5173',  // Vite dev server
+'http://localhost:3000',
+'http://localhost:4173',  // Vite preview
+]);
 
 // ── Validate config ───────────────────────────────────────────────────────────
 
