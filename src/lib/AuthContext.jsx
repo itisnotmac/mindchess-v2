@@ -53,11 +53,18 @@ export async function isUsernameTaken(name) {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined); // undefined = still loading, null = logged out
+  const [premiumReady, setPremiumReady] = useState(false); // true once RC sync completes
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ?? null);
-      if (firebaseUser) configureRevenueCat(firebaseUser.uid);
+      if (firebaseUser) {
+        // Await RC configure + sync before flagging ready so isPremium() is accurate.
+        configureRevenueCat(firebaseUser.uid).finally(() => setPremiumReady(true));
+      } else {
+        // No user — no RC sync needed; mark ready immediately.
+        setPremiumReady(true);
+      }
     });
     return unsubscribe;
   }, []);
@@ -131,7 +138,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signUp, signIn, logOut, deleteAccount }}>
+    <AuthContext.Provider value={{ user, premiumReady, signUp, signIn, logOut, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

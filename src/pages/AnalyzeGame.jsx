@@ -12,6 +12,7 @@ import MobileSelect from '@/components/MobileSelect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PremiumGate from '@/components/PremiumGate';
 import { isPremium } from '@/lib/premium';
+import { useAuth } from '@/lib/AuthContext';
 
 const DEPTH = 3;
 
@@ -48,6 +49,7 @@ export default function AnalyzeGame() {
   const [viewIndex, setViewIndex] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const { premiumReady } = useAuth();
 
   const runAnalysis = (pgnText = pgn, sideText = side) => {
     setError('');
@@ -122,6 +124,17 @@ Write a concise coaching summary (markdown, ~180 words). Cover: what the student
       runAnalysis(location.state.pgn, location.state.side || 'white');
     }
   }, []);
+
+  // Wait for RevenueCat sync before checking premium status.
+  // Without this, isPremium() reads localStorage before the entitlement
+  // has been fetched, causing premium users to see the gate on first load.
+  if (!premiumReady) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!isPremium()) {
     return (
